@@ -13,7 +13,8 @@ const path = require('path');
 
 const OUT          = path.join(__dirname, '..', 'loupe-site', 'feed.json');
 const GEMINI_KEY   = process.env.GEMINI_API_KEY || '';
-const GEMINI_MODELS = (process.env.GEMINI_MODEL ? [process.env.GEMINI_MODEL] : []).concat(['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-flash-latest', 'gemini-1.5-flash']);
+const GEMINI_MODELS = (process.env.GEMINI_MODEL ? [process.env.GEMINI_MODEL] : []).concat(['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-flash-latest', 'gemini-1.5-flash']);
+const LLM_DELAY = parseInt(process.env.LLM_DELAY || '4500', 10); // ms between calls, to respect free-tier per-minute limits
 let CHOSEN_MODEL = null;
 let FIRST_LLM_ERROR = null;
 const MAX_ITEMS    = parseInt(process.env.MAX_ITEMS || '20', 10); // cards surfaced
@@ -380,11 +381,11 @@ function applyLLM(item, r) {
     if (kd.new) item.kha = { gist: String(r.kha.gist).slice(0, 200), digest: kd };
   }
 }
-async function withRetry(fn, tries = 2) {
+async function withRetry(fn, tries = 4) {
   let last;
   for (let i = 0; i < tries; i++) {
     try { return await fn(); }
-    catch (e) { last = e; if (e.status && e.status !== 429 && e.status < 500) break; await sleep(1500 * (i + 1)); }
+    catch (e) { last = e; if (e.status && e.status !== 429 && e.status < 500) break; await sleep(4000 * (i + 1)); }
   }
   throw last;
 }
@@ -421,10 +422,11 @@ async function pool(items, n, worker) {
     CHOSEN_MODEL = await chooseModel();
     if (CHOSEN_MODEL) {
       const toLLM = surfaced.slice(0, MAX_LLM);
-      await pool(toLLM, 2, async (item) => {
+      for (const item of toLLM) {
         try { applyLLM(item, await withRetry(() => geminiDigest(item))); llmOk++; }
         catch (e) { llmFail++; if (!FIRST_LLM_ERROR) FIRST_LLM_ERROR = item.id + ' → ' + e.message; console.warn('  ! LLM fail', item.id, '-', e.message); }
-      });
+        await sleep(LLM_DELAY);
+      }
       console.log('LLM digested', llmOk, '/ failed', llmFail);
       surfaced.sort((a, b) => b.prod * 0.5 + b.market * 0.5 - (a.prod * 0.5 + a.market * 0.5));
     } else {
