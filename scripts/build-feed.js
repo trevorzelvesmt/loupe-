@@ -397,7 +397,7 @@ async function pool(items, n, worker) {
 
 /* ------------------------------ main ------------------------------ */
 (async function main() {
-  console.log('Loupe build-feed —', GEMINI_KEY ? 'LLM digests ON (' + GEMINI_MODEL + ')' : 'no key, snippet fallback');
+  console.log('Loupe build-feed —', GEMINI_KEY ? 'LLM digests ON (trying ' + GEMINI_MODELS.length + ' models)' : 'no key, snippet fallback');
   let raw = await gather();
   console.log('fetched', raw.length, 'raw items');
   raw = dedupe(raw.filter((x) => x.title && x.link)).filter((it) => ageHours(it) <= 96);

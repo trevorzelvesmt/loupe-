@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-06-14T13:21:58.166Z",
+  "generatedAt": "2026-06-14T13:43:25.003Z",
   "source": "live",
   "counts": {
-    "fetched": 104,
+    "fetched": 119,
     "surfaced": 20,
     "noise": 12
   },
@@ -18,7 +18,7 @@
       "prod": 80,
       "market": 92,
       "mins": 6,
-      "age": "23h",
+      "age": "24h",
       "topics": {
         "dev": 1,
         "tools": 0.78,
@@ -37,13 +37,13 @@
       "prod": 80,
       "market": 92,
       "mins": 6,
-      "age": "20h",
+      "age": "21h",
       "topics": {
         "ai": 1
       },
-      "gist": "727 points on Hacker News — tap the source for the discussion.",
+      "gist": "731 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 727 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 731 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -60,28 +60,9 @@
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "658 points on Hacker News — tap the source for the discussion.",
+      "gist": "668 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 658 points. Open the source to read the discussion and decide if it earns your time."
-      }
-    },
-    {
-      "id": "hnti3",
-      "src": "hn",
-      "title": "New pancreatic cancer drug might open the door to much longer survival times",
-      "url": "https://economist.com/science-and-technology/2026/06/12/treating-pancreatic-tumours-may-have-revealed-cancers-master-switch",
-      "prod": 80,
-      "market": 92,
-      "mins": 6,
-      "age": "24h",
-      "topics": {
-        "dev": 1,
-        "tools": 0.78,
-        "tech": 0.66
-      },
-      "gist": "395 points on Hacker News — tap the source for the discussion.",
-      "digest": {
-        "new": "On the Hacker News front page with 395 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 668 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -98,9 +79,9 @@
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "322 points on Hacker News — tap the source for the discussion.",
+      "gist": "326 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 322 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 326 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -109,15 +90,15 @@
       "title": "Free SQL→ER diagram tool, runs in the browser, nothing uploaded",
       "url": "https://sqltoerdiagram.com/",
       "prod": 80,
-      "market": 90,
+      "market": 91,
       "mins": 6,
       "age": "10h",
       "topics": {
         "tools": 1
       },
-      "gist": "243 points on Hacker News — tap the source for the discussion.",
+      "gist": "256 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 243 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 256 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -134,9 +115,28 @@
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "777 points on Hacker News — tap the source for the discussion.",
+      "gist": "784 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 777 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 784 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hnti3",
+      "src": "hn",
+      "title": "New pancreatic cancer drug might open the door to much longer survival times",
+      "url": "https://economist.com/science-and-technology/2026/06/12/treating-pancreatic-tumours-may-have-revealed-cancers-master-switch",
+      "prod": 80,
+      "market": 86,
+      "mins": 6,
+      "age": "1d",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "399 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 399 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -145,7 +145,7 @@
       "title": "How to Earn a Billion Dollars",
       "url": "https://paulgraham.com/earn.html",
       "prod": 85,
-      "market": 79,
+      "market": 80,
       "mins": 6,
       "age": "2h",
       "topics": {
@@ -153,9 +153,26 @@
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "37 points on Hacker News — tap the source for the discussion.",
+      "gist": "53 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 37 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 53 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn1zs0",
+      "src": "hn",
+      "title": "Don't trust large context windows",
+      "url": "https://garrit.xyz/posts/2026-05-06-dont-trust-large-context-windows",
+      "prod": 80,
+      "market": 84,
+      "mins": 6,
+      "age": "8h",
+      "topics": {
+        "dev": 1
+      },
+      "gist": "164 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 164 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -170,26 +187,9 @@
       "topics": {
         "tech": 1
       },
-      "gist": "303 points on Hacker News — tap the source for the discussion.",
+      "gist": "305 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 303 points. Open the source to read the discussion and decide if it earns your time."
-      }
-    },
-    {
-      "id": "hn1zs0",
-      "src": "hn",
-      "title": "Don't trust large context windows",
-      "url": "https://garrit.xyz/posts/2026-05-06-dont-trust-large-context-windows",
-      "prod": 80,
-      "market": 83,
-      "mins": 6,
-      "age": "7h",
-      "topics": {
-        "dev": 1
-      },
-      "gist": "159 points on Hacker News — tap the source for the discussion.",
-      "digest": {
-        "new": "On the Hacker News front page with 159 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 305 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -198,17 +198,17 @@
       "title": "Phoenix LiveView 1.2",
       "url": "https://phoenixframework.org/blog/phoenix-liveview-1-2-released",
       "prod": 80,
-      "market": 82,
+      "market": 83,
       "mins": 6,
-      "age": "8h",
+      "age": "9h",
       "topics": {
         "dev": 1,
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "146 points on Hacker News — tap the source for the discussion.",
+      "gist": "152 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 146 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 152 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -225,9 +225,9 @@
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "138 points on Hacker News — tap the source for the discussion.",
+      "gist": "141 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 138 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 141 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -263,9 +263,28 @@
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "262 points on Hacker News — tap the source for the discussion.",
+      "gist": "264 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 262 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 264 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hne7u",
+      "src": "hn",
+      "title": "The Birth and Death of JavaScript (2014)",
+      "url": "https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript",
+      "prod": 80,
+      "market": 80,
+      "mins": 6,
+      "age": "1h",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "42 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 42 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -286,25 +305,6 @@
       }
     },
     {
-      "id": "hne7u",
-      "src": "hn",
-      "title": "The Birth and Death of JavaScript (2014)",
-      "url": "https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript",
-      "prod": 80,
-      "market": 78,
-      "mins": 6,
-      "age": "43m",
-      "topics": {
-        "dev": 1,
-        "tools": 0.78,
-        "tech": 0.66
-      },
-      "gist": "22 points on Hacker News — tap the source for the discussion.",
-      "digest": {
-        "new": "On the Hacker News front page with 22 points. Open the source to read the discussion and decide if it earns your time."
-      }
-    },
-    {
       "id": "ne1kp",
       "src": "news",
       "title": "Solid-state batteries still aren’t ready, but gels are",
@@ -312,7 +312,7 @@
       "prod": 79,
       "market": 78,
       "mins": 4,
-      "age": "1h",
+      "age": "2h",
       "topics": {
         "story": 1
       },
@@ -329,7 +329,7 @@
       "prod": 85,
       "market": 70,
       "mins": 7,
-      "age": "50m",
+      "age": "1h",
       "topics": {
         "tools": 1,
         "frameworks": 0.78
@@ -340,10 +340,10 @@
       }
     },
     {
-      "id": "hn19it",
+      "id": "hnv46",
       "src": "hn",
-      "title": "Weave: Merging based on language structure and not lines",
-      "url": "https://ataraxy-labs.github.io/weave/",
+      "title": "Making Claude a Chemist",
+      "url": "https://www.anthropic.com/research/making-claude-a-chemist",
       "prod": 80,
       "market": 75,
       "mins": 6,
@@ -381,11 +381,6 @@
   "noise": [
     {
       "x": 80,
-      "t": "Making Claude a Chemist",
-      "r": "Lower signal · ranked below today’s cut"
-    },
-    {
-      "x": 80,
       "t": "Running DOS on Behringers DDX3216 with a DIY x86-Bios from Scratch",
       "r": "Lower signal · ranked below today’s cut"
     },
@@ -400,8 +395,23 @@
       "r": "Lower signal · ranked below today’s cut"
     },
     {
+      "x": 86,
+      "t": "AWS Introduces Durable Storage Option for ElastiCache for Valkey",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 70,
+      "t": "The impossible dream of the universal remote",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
       "x": 79,
       "t": "Amazon security research reportedly led to the White House’s Anthropic Fable ban",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 86,
+      "t": "Terraform MCP Server Enables AI Assistants to Interact with Terraform Infrastructure",
       "r": "Lower signal · ranked below today’s cut"
     },
     {
@@ -427,16 +437,6 @@
     {
       "x": 74,
       "t": "Microsoft hasn’t ruled out spinning off Xbox",
-      "r": "Lower signal · ranked below today’s cut"
-    },
-    {
-      "x": 74,
-      "t": "Bose’s latest QuietComfort Ultra are $70 off, marking a new low price",
-      "r": "Lower signal · ranked below today’s cut"
-    },
-    {
-      "x": 74,
-      "t": "Never Post’s Mike Rugnetta on the creative process and the value of reliable power",
       "r": "Lower signal · ranked below today’s cut"
     }
   ]
