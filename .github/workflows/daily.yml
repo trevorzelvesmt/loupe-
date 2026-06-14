@@ -39,6 +39,8 @@ jobs:
         run: node scripts/build-feed.js
 
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true        # self-enable Pages on first run (no manual toggle needed)
 
       - uses: actions/upload-pages-artifact@v3
         with:
