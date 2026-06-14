@@ -93,6 +93,10 @@
   .reset button{ display:flex; align-items:center; gap:7px; padding:9px 14px; border-radius:99px; cursor:pointer; background:rgba(255,255,255,.04); border:1px solid var(--hair-2); color:var(--muted); font-size:12.5px; font-family:inherit; transition:all .4s var(--ease); }
   .reset button:hover{ color:var(--ink); border-color:var(--accent); background:var(--glow); }
   .reset button svg{ width:14px; height:14px; }
+  .export-btn{ margin-top:14px; display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border-radius:99px; cursor:pointer; background:var(--glow); border:1px solid var(--hair-2); color:var(--ink); font-size:12.5px; font-family:inherit; transition:all .4s var(--ease); }
+  .export-btn:hover{ border-color:var(--accent); background:rgba(255,255,255,.06); }
+  .export-btn svg{ width:14px; height:14px; }
+  .export-note{ margin-top:6px; font-size:11px; color:var(--faint); }
 
   .mcols{ display:grid; grid-template-columns:1fr 1fr 1fr; }
   .mcol{ padding:24px 28px; border-right:1px solid var(--hair-2); }
@@ -311,6 +315,10 @@
           <div class="mhead">Interest matrix · <span id="barsWho">Trev</span></div>
           <div class="bars" id="bars"></div>
           <div class="learn-hint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2 2M16.4 16.4l2 2M18.4 5.6l-2 2M7.6 16.4l-2 2"/></svg> <span id="learnHint">learns from your clicks, saves & More/Less</span></div>
+          <button class="export-btn" id="exportBtn" title="Download everything you read, liked & care about — as JSON">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg> Export my data
+          </button>
+          <div class="export-note">reads · likes · interests, with timestamps — do it monthly</div>
         </div>
       </div>
     </div></section>
@@ -465,7 +473,7 @@ function urlOf(id){ return URLS[id] || '#'; }
 
 /* ============================ STATE ============================ */
 const DAY = 86400000;
-const DEFAULTS = { persona:'trev', threshold:65, mix:40, saved:[], deltas:{trev:{},kha:{},cang:{}}, clicks:0, lastReset:Date.now() };
+const DEFAULTS = { persona:'trev', threshold:65, mix:40, saved:[], deltas:{trev:{},kha:{},cang:{}}, clicks:0, lastReset:Date.now(), reads:[], saveLog:[], reactions:[], lastExport:null };
 let state = load();
 maybeWeeklyReset();
 
@@ -603,7 +611,7 @@ function openReader(id){
   const item=ITEMS.find(i=>i.id===id); if(!item) return;
   const pk=state.persona, it=C(item), s=SRC[item.src], wc=wordCount(it.digest), m=Math.round(interestMatch(item,pk)*100), isSaved=state.saved.includes(id);
   // passive learning: a click is a real signal
-  state.clicks++; bumpTop(item,pk,0.025,2); save();
+  state.clicks++; bumpTop(item,pk,0.025,2); logRead(item); save();
   $('#readerCore').innerHTML=`
     <button class="rclose" id="rclose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <div class="src"><span class="ico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:var(--ink);fill:none;opacity:.8">${s.ic}</svg></span><span class="meta"><b>${s.l}</b></span></div>
@@ -632,16 +640,16 @@ $('#overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeRea
 function handleAct(act,id,fromReader){
   const item=ITEMS.find(i=>i.id===id);
   if(act==='read'){ openReader(id); return; }
-  if(act==='save'){ const i=state.saved.indexOf(id); if(i>=0){state.saved.splice(i,1);toast('Removed from saved');}else{state.saved.push(id);toast('Saved to your shelf');} save(); render(); if(fromReader) refreshReaderSaveState(id); }
-  else if(act==='more'){ bumpTop(item,state.persona,0.07,3); save(); render(); toast(`Tuned ↑ ${Object.keys(item.topics).slice(0,2).join(', ')} for ${PERSONAS[state.persona].name}`); }
-  else if(act==='less'){ bumpTop(item,state.persona,-0.09,3); save(); render(); toast(`Tuned ↓ ${Object.keys(item.topics).slice(0,2).join(', ')} for ${PERSONAS[state.persona].name}`); }
+  if(act==='save'){ const i=state.saved.indexOf(id); if(i>=0){state.saved.splice(i,1);logSave(item,'unsave');toast('Removed from saved');}else{state.saved.push(id);logSave(item,'save');toast('Saved to your shelf');} save(); render(); if(fromReader) refreshReaderSaveState(id); }
+  else if(act==='more'){ bumpTop(item,state.persona,0.07,3); logReaction(item,'more'); save(); render(); toast(`Tuned ↑ ${Object.keys(item.topics).slice(0,2).join(', ')} for ${PERSONAS[state.persona].name}`); }
+  else if(act==='less'){ bumpTop(item,state.persona,-0.09,3); logReaction(item,'less'); save(); render(); toast(`Tuned ↓ ${Object.keys(item.topics).slice(0,2).join(', ')} for ${PERSONAS[state.persona].name}`); }
 }
 function refreshReaderSaveState(id){ if($('#overlay').classList.contains('open')) openReader(id); }
 
 feedEl.addEventListener('click',e=>{
   if(e.target.closest('a')) return;
   const tag=e.target.closest('.tag');
-  if(tag){ e.stopPropagation(); bump(state.persona,tag.dataset.topic,0.08); save(); render(); toast(`↑ more ${tag.dataset.topic} for ${PERSONAS[state.persona].name}`); return; }
+  if(tag){ e.stopPropagation(); bump(state.persona,tag.dataset.topic,0.08); logReactionTopic(tag.dataset.topic,'more'); save(); render(); toast(`↑ more ${tag.dataset.topic} for ${PERSONAS[state.persona].name}`); return; }
   const btn=e.target.closest('.act');
   if(btn){ e.stopPropagation(); handleAct(btn.dataset.act,btn.dataset.id,false); return; }
   const op=e.target.closest('[data-open]'); if(op) openReader(op.dataset.open);
@@ -659,6 +667,7 @@ const mix=$('#mix'); mix.value=state.mix;
 mix.addEventListener('input',()=>{ state.mix=+mix.value; save(); render(); });
 
 $('#resetBtn').addEventListener('click',()=>{ decayDeltas(0.4); state.lastReset=Date.now(); save(); render(); toast('Bubble refreshed — learned bias decayed toward neutral'); });
+$('#exportBtn').addEventListener('click',exportData);
 $('#noiseTop').addEventListener('click',()=>$('#noise').classList.toggle('open'));
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape') closeReader();
@@ -668,6 +677,46 @@ document.addEventListener('keydown',e=>{
 
 const io=new IntersectionObserver(es=>{ es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} }); },{threshold:.08,rootMargin:'0px 0px -40px 0px'});
 let tT; function toast(msg){ const t=$('#toast'); $('#toastMsg').textContent=msg; t.classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* ===================== ENGAGEMENT LOG · MONTHLY EXPORT ===================== */
+function _cap(a,n){ while(a.length>n) a.shift(); return a; }
+function logRead(item){ (state.reads=state.reads||[]).push({id:item.id,title:item.title,src:item.src,topics:Object.keys(item.topics||{}).slice(0,4),persona:state.persona,ts:Date.now()}); _cap(state.reads,3000); }
+function logSave(item,action){ (state.saveLog=state.saveLog||[]).push({id:item.id,title:item.title,src:item.src,topics:Object.keys(item.topics||{}).slice(0,4),action,persona:state.persona,ts:Date.now()}); _cap(state.saveLog,2000); }
+function logReaction(item,dir){ (state.reactions=state.reactions||[]).push({id:item.id,title:item.title,topics:Object.keys(item.topics||{}).slice(0,3),dir,persona:state.persona,ts:Date.now()}); _cap(state.reactions,2000); }
+function logReactionTopic(topic,dir){ (state.reactions=state.reactions||[]).push({topic,dir,persona:state.persona,ts:Date.now()}); _cap(state.reactions,2000); }
+
+function _topInterests(pk,n){ const all=new Set(Object.keys(PERSONAS[pk].interests)); ITEMS.forEach(i=>Object.keys(i.topics).forEach(t=>all.add(t))); return [...all].map(t=>[t,+interestOf(pk,t).toFixed(3)]).sort((a,b)=>b[1]-a[1]).slice(0,n); }
+function _topicFreq(list){ const m={}; list.forEach(o=>{ const ts=o.topics||(o.topic?[o.topic]:[]); ts.forEach(t=>m[t]=(m[t]||0)+1); }); return Object.entries(m).sort((a,b)=>b[1]-a[1]); }
+function _since(list,ms){ const cut=Date.now()-ms; return list.filter(o=>o.ts>=cut).length; }
+function buildExport(){
+  const pk=state.persona, now=Date.now(), D=86400000;
+  const reads=state.reads||[], saveLog=state.saveLog||[], reactions=state.reactions||[];
+  const liked=saveLog.filter(s=>s.action==='save');
+  const interests=_topInterests(pk,14), readTopics=_topicFreq(reads).slice(0,10);
+  const readable=[
+    `Loupe export · ${new Date(now).toISOString().slice(0,10)} · lens: ${PERSONAS[pk].name}`,
+    `Reads: ${reads.length} all-time (${_since(reads,30*D)} in last 30d) · Likes: ${liked.length} all-time (${_since(liked,30*D)} in last 30d)`,
+    `Top interests: ${interests.slice(0,6).map(([t,v])=>t+' '+Math.round(v*100)).join(' · ')||'—'}`,
+    `Most-read topics: ${readTopics.slice(0,6).map(([t,c])=>t+'×'+c).join(' · ')||'—'}`,
+    `Recently liked: ${liked.slice(-5).reverse().map(s=>s.title).join('  |  ')||'—'}`,
+  ];
+  return {
+    exportedAt:new Date(now).toISOString(),
+    previousExport: state.lastExport?new Date(state.lastExport).toISOString():null,
+    persona:pk,
+    summary:{ reads_all:reads.length, reads_30d:_since(reads,30*D), likes_all:liked.length, likes_30d:_since(liked,30*D), reactions_all:reactions.length, topInterests:interests, topReadTopics:readTopics, readable },
+    interests:Object.fromEntries(interests),
+    reads, likes:saveLog, reactions,
+  };
+}
+function _download(name,text){ const b=new Blob([text],{type:'application/json'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),1500); }
+function exportData(){
+  const data=buildExport(), d=new Date();
+  const f=`loupe-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.json`;
+  _download(f, JSON.stringify(data,null,2));
+  state.lastExport=Date.now(); save();
+  toast(`Exported ${data.summary.reads_all} reads · ${data.summary.likes_all} likes → ${f}`);
+}
 
 /* ============================ LIVE FEED LOADER ============================ */
 /* Pulls feed.json (built daily by GitHub Actions). Falls back to the embedded
