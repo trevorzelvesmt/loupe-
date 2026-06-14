@@ -93,7 +93,8 @@
   .reset button{ display:flex; align-items:center; gap:7px; padding:9px 14px; border-radius:99px; cursor:pointer; background:rgba(255,255,255,.04); border:1px solid var(--hair-2); color:var(--muted); font-size:12.5px; font-family:inherit; transition:all .4s var(--ease); }
   .reset button:hover{ color:var(--ink); border-color:var(--accent); background:var(--glow); }
   .reset button svg{ width:14px; height:14px; }
-  .export-btn{ margin-top:14px; display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border-radius:99px; cursor:pointer; background:var(--glow); border:1px solid var(--hair-2); color:var(--ink); font-size:12.5px; font-family:inherit; transition:all .4s var(--ease); }
+  .export-row{ margin-top:14px; display:flex; gap:8px; }
+  .export-btn{ display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border-radius:99px; cursor:pointer; background:var(--glow); border:1px solid var(--hair-2); color:var(--ink); font-size:12.5px; font-family:inherit; transition:all .4s var(--ease); }
   .export-btn:hover{ border-color:var(--accent); background:rgba(255,255,255,.06); }
   .export-btn svg{ width:14px; height:14px; }
   .export-note{ margin-top:6px; font-size:11px; color:var(--faint); }
@@ -315,9 +316,14 @@
           <div class="mhead">Interest matrix · <span id="barsWho">Trev</span></div>
           <div class="bars" id="bars"></div>
           <div class="learn-hint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2 2M16.4 16.4l2 2M18.4 5.6l-2 2M7.6 16.4l-2 2"/></svg> <span id="learnHint">learns from your clicks, saves & More/Less</span></div>
-          <button class="export-btn" id="exportBtn" title="Download everything you read, liked & care about — as JSON">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg> Export my data
-          </button>
+          <div class="export-row">
+            <button class="export-btn" id="exportBtn" title="Full data + interests — as JSON">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg> JSON
+            </button>
+            <button class="export-btn" id="exportCsvBtn" title="One row per event — opens in Excel / Sheets">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg> CSV
+            </button>
+          </div>
           <div class="export-note">reads · likes · interests, with timestamps — do it monthly</div>
         </div>
       </div>
@@ -668,6 +674,7 @@ mix.addEventListener('input',()=>{ state.mix=+mix.value; save(); render(); });
 
 $('#resetBtn').addEventListener('click',()=>{ decayDeltas(0.4); state.lastReset=Date.now(); save(); render(); toast('Bubble refreshed — learned bias decayed toward neutral'); });
 $('#exportBtn').addEventListener('click',exportData);
+$('#exportCsvBtn').addEventListener('click',exportCSV);
 $('#noiseTop').addEventListener('click',()=>$('#noise').classList.toggle('open'));
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape') closeReader();
@@ -709,7 +716,30 @@ function buildExport(){
     reads, likes:saveLog, reactions,
   };
 }
-function _download(name,text){ const b=new Blob([text],{type:'application/json'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),1500); }
+function _download(name,text,type){ const b=new Blob([text],{type:type||'application/json'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),1500); }
+function _csvCell(v){ v=String(v==null?'':v); return /[",\n\r]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+function _stamp(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function buildCSV(){
+  const pk=state.persona;
+  const reads=state.reads||[], saveLog=state.saveLog||[], reactions=state.reactions||[];
+  const ev=[];
+  reads.forEach(r=>ev.push({ts:r.ts,type:'read',detail:'',src:r.src||'',topics:r.topics||[],title:r.title||''}));
+  saveLog.forEach(s=>ev.push({ts:s.ts,type:s.action==='save'?'like':'unlike',detail:s.action||'',src:s.src||'',topics:s.topics||[],title:s.title||''}));
+  reactions.forEach(x=>{ if(x.topic) ev.push({ts:x.ts,type:'tag',detail:x.topic,src:'',topics:[x.topic],title:''}); else ev.push({ts:x.ts,type:x.dir||'react',detail:'',src:'',topics:x.topics||[],title:x.title||''}); });
+  ev.sort((a,b)=>a.ts-b.ts);
+  const rows=[['date','time','type','detail','source','topics','title']];
+  ev.forEach(e=>{ const d=new Date(e.ts); rows.push([d.toISOString().slice(0,10), d.toTimeString().slice(0,8), e.type, e.detail, e.src, (e.topics||[]).join('|'), e.title]); });
+  const day=_stamp();
+  _topInterests(pk,20).forEach(([t,v])=>rows.push([day,'','interest',Math.round(v*100),pk,t,'']));
+  return rows.map(r=>r.map(_csvCell).join(',')).join('\r\n');
+}
+function exportCSV(){
+  const f=`loupe-${_stamp()}.csv`;
+  _download(f, buildCSV(), 'text/csv;charset=utf-8');
+  state.lastExport=Date.now(); save();
+  const n=(state.reads||[]).length+(state.saveLog||[]).length+(state.reactions||[]).length;
+  toast(`Exported ${n} events → ${f}`);
+}
 function exportData(){
   const data=buildExport(), d=new Date();
   const f=`loupe-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.json`;
