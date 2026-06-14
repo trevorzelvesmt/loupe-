@@ -1,31 +1,15 @@
 {
-  "generatedAt": "2026-06-14T12:41:49.884Z",
+  "generatedAt": "2026-06-14T13:21:58.166Z",
   "source": "live",
   "counts": {
-    "fetched": 120,
+    "fetched": 104,
     "surfaced": 20,
     "noise": 12
   },
+  "debug": {
+    "keyPresent": false
+  },
   "items": [
-    {
-      "id": "hn14pb",
-      "src": "hn",
-      "title": "Honda Civics and the Evil Valet",
-      "url": "https://juniperspring.org/posts/honda-evil-valet/",
-      "prod": 80,
-      "market": 96,
-      "mins": 6,
-      "age": "12h",
-      "topics": {
-        "dev": 1,
-        "tools": 0.78,
-        "tech": 0.66
-      },
-      "gist": "313 points on Hacker News — tap the source for the discussion.",
-      "digest": {
-        "new": "On the Hacker News front page with 313 points. Open the source to read the discussion and decide if it earns your time."
-      }
-    },
     {
       "id": "hn1slr",
       "src": "hn",
@@ -40,9 +24,9 @@
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "843 points on Hacker News — tap the source for the discussion.",
+      "gist": "849 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 843 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 849 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -57,9 +41,9 @@
       "topics": {
         "ai": 1
       },
-      "gist": "717 points on Hacker News — tap the source for the discussion.",
+      "gist": "727 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 717 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 727 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -70,52 +54,53 @@
       "prod": 80,
       "market": 92,
       "mins": 6,
-      "age": "20h",
+      "age": "21h",
       "topics": {
         "dev": 1,
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "641 points on Hacker News — tap the source for the discussion.",
+      "gist": "658 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 641 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 658 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
       "id": "hnti3",
       "src": "hn",
-      "title": "Treating pancreatic tumours may have revealed cancer's master switch",
+      "title": "New pancreatic cancer drug might open the door to much longer survival times",
       "url": "https://economist.com/science-and-technology/2026/06/12/treating-pancreatic-tumours-may-have-revealed-cancers-master-switch",
       "prod": 80,
       "market": 92,
       "mins": 6,
-      "age": "23h",
+      "age": "24h",
       "topics": {
         "dev": 1,
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "391 points on Hacker News — tap the source for the discussion.",
+      "gist": "395 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 391 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 395 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
-      "id": "hn1hvu",
+      "id": "hn14pb",
       "src": "hn",
-      "title": "AI coding at home without going broke",
-      "url": "https://stephen.bochinski.dev/blog/2026/06/13/ai-coding-at-home-without-going-broke/",
+      "title": "Honda Civics and the Evil Valet",
+      "url": "https://juniperspring.org/posts/honda-evil-valet/",
       "prod": 80,
-      "market": 90,
+      "market": 91,
       "mins": 6,
-      "age": "20h",
+      "age": "13h",
       "topics": {
-        "ai": 1,
-        "dev": 0.78
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
       },
-      "gist": "310 points on Hacker News — tap the source for the discussion.",
+      "gist": "322 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 310 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 322 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -124,15 +109,15 @@
       "title": "Free SQL→ER diagram tool, runs in the browser, nothing uploaded",
       "url": "https://sqltoerdiagram.com/",
       "prod": 80,
-      "market": 88,
+      "market": 90,
       "mins": 6,
-      "age": "9h",
+      "age": "10h",
       "topics": {
         "tools": 1
       },
-      "gist": "217 points on Hacker News — tap the source for the discussion.",
+      "gist": "243 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 217 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 243 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -149,26 +134,28 @@
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "769 points on Hacker News — tap the source for the discussion.",
+      "gist": "777 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 769 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 777 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
-      "id": "hnkcv",
+      "id": "hn1hyy",
       "src": "hn",
-      "title": "ReactOS (FOSS \"Windows\") achieves 3D-accelerated Half-Life on real hardware",
-      "url": "https://www.phoronix.com/news/ReactOS-Running-Half-Life",
-      "prod": 80,
-      "market": 85,
+      "title": "How to Earn a Billion Dollars",
+      "url": "https://paulgraham.com/earn.html",
+      "prod": 85,
+      "market": 79,
       "mins": 6,
-      "age": "13h",
+      "age": "2h",
       "topics": {
-        "hardware": 1
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
       },
-      "gist": "248 points on Hacker News — tap the source for the discussion.",
+      "gist": "37 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 248 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 37 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -183,9 +170,9 @@
       "topics": {
         "tech": 1
       },
-      "gist": "302 points on Hacker News — tap the source for the discussion.",
+      "gist": "303 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 302 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 303 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -194,15 +181,15 @@
       "title": "Don't trust large context windows",
       "url": "https://garrit.xyz/posts/2026-05-06-dont-trust-large-context-windows",
       "prod": 80,
-      "market": 82,
+      "market": 83,
       "mins": 6,
       "age": "7h",
       "topics": {
         "dev": 1
       },
-      "gist": "147 points on Hacker News — tap the source for the discussion.",
+      "gist": "159 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 147 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 159 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -219,9 +206,9 @@
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "141 points on Hacker News — tap the source for the discussion.",
+      "gist": "146 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 141 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 146 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -230,17 +217,17 @@
       "title": "Pac-Man, but you're the ghost",
       "url": "https://garrit.xyz/posts/2026-06-13-pac-man-but-you-re-the-ghost",
       "prod": 80,
-      "market": 81,
+      "market": 82,
       "mins": 6,
-      "age": "8h",
+      "age": "9h",
       "topics": {
         "dev": 1,
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "126 points on Hacker News — tap the source for the discussion.",
+      "gist": "138 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 126 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 138 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -249,17 +236,17 @@
       "title": "GameBoy Workboy",
       "url": "https://tcrf.net/Workboy",
       "prod": 80,
-      "market": 80,
+      "market": 81,
       "mins": 6,
-      "age": "19h",
+      "age": "20h",
       "topics": {
         "dev": 1,
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "197 points on Hacker News — tap the source for the discussion.",
+      "gist": "199 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 197 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 199 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -268,7 +255,7 @@
       "title": "RTX 5080 and RTX 3090 Setup: 80 Tok/s on Qwen 3.6 27B Q8",
       "url": "https://imil.net/blog/posts/2026/rtx-5080-+-rtx-3090-setup-80+-tok-s-on-qwen-3.6-27b-q8/",
       "prod": 80,
-      "market": 79,
+      "market": 80,
       "mins": 6,
       "age": "1d",
       "topics": {
@@ -276,9 +263,9 @@
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "257 points on Hacker News — tap the source for the discussion.",
+      "gist": "262 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 257 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 262 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -293,9 +280,28 @@
       "topics": {
         "design": 1
       },
-      "gist": "251 points on Hacker News — tap the source for the discussion.",
+      "gist": "257 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 251 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 257 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hne7u",
+      "src": "hn",
+      "title": "The Birth and Death of JavaScript (2014)",
+      "url": "https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript",
+      "prod": 80,
+      "market": 78,
+      "mins": 6,
+      "age": "43m",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "22 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 22 points. Open the source to read the discussion and decide if it earns your time."
       }
     },
     {
@@ -306,7 +312,7 @@
       "prod": 79,
       "market": 78,
       "mins": 4,
-      "age": "42m",
+      "age": "1h",
       "topics": {
         "story": 1
       },
@@ -323,7 +329,7 @@
       "prod": 85,
       "market": 70,
       "mins": 7,
-      "age": "10m",
+      "age": "50m",
       "topics": {
         "tools": 1,
         "frameworks": 0.78
@@ -334,51 +340,48 @@
       }
     },
     {
-      "id": "hnqpt",
-      "src": "hn",
-      "title": "The adder at the heart of Intel's 8087 floating-point chip",
-      "url": "https://www.righto.com/2026/06/intel-8087-adder-reverse-engineered.html",
-      "prod": 80,
-      "market": 74,
-      "mins": 6,
-      "age": "20h",
-      "topics": {
-        "hardware": 1
-      },
-      "gist": "116 points on Hacker News — tap the source for the discussion.",
-      "digest": {
-        "new": "On the Hacker News front page with 116 points. Open the source to read the discussion and decide if it earns your time."
-      }
-    },
-    {
       "id": "hn19it",
       "src": "hn",
       "title": "Weave: Merging based on language structure and not lines",
       "url": "https://ataraxy-labs.github.io/weave/",
       "prod": 80,
-      "market": 74,
+      "market": 75,
       "mins": 6,
-      "age": "10h",
+      "age": "11h",
       "topics": {
         "dev": 1,
         "tools": 0.78,
         "tech": 0.66
       },
-      "gist": "49 points on Hacker News — tap the source for the discussion.",
+      "gist": "55 points on Hacker News — tap the source for the discussion.",
       "digest": {
-        "new": "On the Hacker News front page with 49 points. Open the source to read the discussion and decide if it earns your time."
+        "new": "On the Hacker News front page with 55 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn1bh3",
+      "src": "hn",
+      "title": "Tribblix: The retro Illumos distribution",
+      "url": "http://tribblix.org/",
+      "prod": 80,
+      "market": 75,
+      "mins": 6,
+      "age": "8h",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "55 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 55 points. Open the source to read the discussion and decide if it earns your time."
       }
     }
   ],
   "noise": [
     {
       "x": 80,
-      "t": "Tribblix: The retro Illumos distribution",
-      "r": "Lower signal · ranked below today’s cut"
-    },
-    {
-      "x": 80,
-      "t": "Building a serial and VGA \"everything console\"",
+      "t": "Making Claude a Chemist",
       "r": "Lower signal · ranked below today’s cut"
     },
     {
@@ -387,8 +390,8 @@
       "r": "Lower signal · ranked below today’s cut"
     },
     {
-      "x": 86,
-      "t": "AWS Introduces Durable Storage Option for ElastiCache for Valkey",
+      "x": 80,
+      "t": "Building a serial and VGA \"everything console\"",
       "r": "Lower signal · ranked below today’s cut"
     },
     {
@@ -399,11 +402,6 @@
     {
       "x": 79,
       "t": "Amazon security research reportedly led to the White House’s Anthropic Fable ban",
-      "r": "Lower signal · ranked below today’s cut"
-    },
-    {
-      "x": 86,
-      "t": "Terraform MCP Server Enables AI Assistants to Interact with Terraform Infrastructure",
       "r": "Lower signal · ranked below today’s cut"
     },
     {
@@ -429,6 +427,16 @@
     {
       "x": 74,
       "t": "Microsoft hasn’t ruled out spinning off Xbox",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 74,
+      "t": "Bose’s latest QuietComfort Ultra are $70 off, marking a new low price",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 74,
+      "t": "Never Post’s Mike Rugnetta on the creative process and the value of reliable power",
       "r": "Lower signal · ranked below today’s cut"
     }
   ]

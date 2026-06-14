@@ -13,7 +13,9 @@ const path = require('path');
 
 const OUT          = path.join(__dirname, '..', 'loupe-site', 'feed.json');
 const GEMINI_KEY   = process.env.GEMINI_API_KEY || '';
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+const GEMINI_MODELS = (process.env.GEMINI_MODEL ? [process.env.GEMINI_MODEL] : []).concat(['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-flash-latest', 'gemini-1.5-flash']);
+let CHOSEN_MODEL = null;
+let FIRST_LLM_ERROR = null;
 const MAX_ITEMS    = parseInt(process.env.MAX_ITEMS || '20', 10); // cards surfaced
 const MAX_LLM      = parseInt(process.env.MAX_LLM   || '18', 10); // how many get an LLM digest
 const UA           = 'Mozilla/5.0 (compatible; LoupeBot/1.0; +https://github.com/loupe)';
@@ -335,20 +337,24 @@ function prompt(item) {
     '- kha: the same gist + digest but in a playful Gen-Z voice (keep the substance 100% real; add light slang and an emoji or two).',
   ].join('\n');
 }
-async function geminiDigest(item) {
-  const body = { contents: [{ parts: [{ text: prompt(item) }] }], generationConfig: { temperature: 0.6, responseMimeType: 'application/json', responseSchema: SCHEMA } };
-  const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + GEMINI_KEY;
+async function callGemini(model, text) {
+  const body = { contents: [{ parts: [{ text }] }], generationConfig: { temperature: 0.6, responseMimeType: 'application/json' } };
+  const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + GEMINI_KEY;
   const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
-  if (!r.ok) {
-    const t = await r.text().catch(() => '');
-    const e = new Error('Gemini ' + r.status + ' ' + t.slice(0, 140));
-    e.status = r.status;
-    throw e;
-  }
-  const data = await r.json();
-  const text = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts || []).map((p) => p.text).join('');
-  return JSON.parse(text);
+  const t = await r.text();
+  if (!r.ok) { const e = new Error('HTTP ' + r.status + ': ' + t.slice(0, 180).replace(/\s+/g, ' ')); e.status = r.status; throw e; }
+  const data = JSON.parse(t);
+  const out = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts || []).map((p) => p.text).join('');
+  return JSON.parse(out);
 }
+async function chooseModel() {
+  for (const m of GEMINI_MODELS) {
+    try { await callGemini(m, 'Return exactly this JSON and nothing else: {"ok":true}'); console.log('  Gemini model OK:', m); return m; }
+    catch (e) { if (!FIRST_LLM_ERROR) FIRST_LLM_ERROR = m + ' → ' + e.message; console.warn('  ! model failed:', m, '-', e.message); if (e.status === 400 && /api key not valid|invalid/i.test(e.message)) break; }
+  }
+  return null;
+}
+async function geminiDigest(item) { return callGemini(CHOSEN_MODEL, prompt(item)); }
 function cleanDigest(d) {
   const out = {};
   for (const k of ['new', 'affect', 'profit', 'shift', 'move']) if (d && d[k]) out[k] = String(d[k]).trim();
@@ -410,15 +416,20 @@ async function pool(items, n, worker) {
   const surfaced = items.slice(0, MAX_ITEMS);
   const belowCut = items.slice(MAX_ITEMS, MAX_ITEMS + 12);
 
+  let llmOk = 0, llmFail = 0;
   if (GEMINI_KEY) {
-    const toLLM = surfaced.slice(0, MAX_LLM);
-    let ok = 0, fail = 0;
-    await pool(toLLM, 2, async (item) => {
-      try { applyLLM(item, await withRetry(() => geminiDigest(item))); ok++; }
-      catch (e) { fail++; console.warn('  ! LLM fail', item.id, '-', e.message); }
-    });
-    console.log('LLM digested', ok, '/ failed', fail);
-    surfaced.sort((a, b) => b.prod * 0.5 + b.market * 0.5 - (a.prod * 0.5 + a.market * 0.5));
+    CHOSEN_MODEL = await chooseModel();
+    if (CHOSEN_MODEL) {
+      const toLLM = surfaced.slice(0, MAX_LLM);
+      await pool(toLLM, 2, async (item) => {
+        try { applyLLM(item, await withRetry(() => geminiDigest(item))); llmOk++; }
+        catch (e) { llmFail++; if (!FIRST_LLM_ERROR) FIRST_LLM_ERROR = item.id + ' → ' + e.message; console.warn('  ! LLM fail', item.id, '-', e.message); }
+      });
+      console.log('LLM digested', llmOk, '/ failed', llmFail);
+      surfaced.sort((a, b) => b.prod * 0.5 + b.market * 0.5 - (a.prod * 0.5 + a.market * 0.5));
+    } else {
+      console.warn('No working Gemini model — snippet fallback. First error:', FIRST_LLM_ERROR);
+    }
   }
 
   const noise = [
@@ -429,8 +440,9 @@ async function pool(items, n, worker) {
   const clean = surfaced.map(({ _summary, _points, _clickbait, ...rest }) => rest);
   const out = {
     generatedAt: new Date().toISOString(),
-    source: GEMINI_KEY ? 'live+llm' : 'live',
+    source: llmOk > 0 ? 'live+llm' : 'live',
     counts: { fetched: raw.length, surfaced: clean.length, noise: noise.length },
+    debug: GEMINI_KEY ? { keyPresent: true, model: CHOSEN_MODEL, llmOk, llmFail, firstError: FIRST_LLM_ERROR } : { keyPresent: false },
     items: clean,
     noise,
   };
