@@ -364,6 +364,8 @@ const PERSONAS = {
     interests:{ creativity:.95,design:.9,story:.86,marketing:.74,leadership:.6,'self-help':.62,productivity:.55,architecture:.62,ai:.5,innovation:.85,thinking:.5,business:.45 } },
   cang:{ name:'Cang', type:'ENTJ · commander',
     interests:{ execution:.92,growth:.9,business:.9,sales:.86,leadership:.85,market:.82,procurement:.8,strategy:.76,ops:.72,ai:.6,regulation:.6,construction:.55,germany:.6 } },
+  hanna:{ name:'Hanna', type:'custom lens · tuning',
+    interests:{ ai:.6,tech:.55,business:.6,strategy:.55,design:.6,creativity:.55,productivity:.6,'self-help':.55,leadership:.55,thinking:.55,marketing:.5,growth:.5 } },
 };
 
 /* ============================ ITEMS ============================ */
@@ -479,7 +481,7 @@ function urlOf(id){ return URLS[id] || '#'; }
 
 /* ============================ STATE ============================ */
 const DAY = 86400000;
-const DEFAULTS = { persona:'trev', threshold:65, mix:40, saved:[], deltas:{trev:{},kha:{},cang:{}}, clicks:0, lastReset:Date.now(), reads:[], saveLog:[], reactions:[], lastExport:null };
+const DEFAULTS = { persona:'trev', threshold:65, mix:40, saved:[], deltas:{trev:{},kha:{},cang:{},hanna:{}}, clicks:0, lastReset:Date.now(), reads:[], saveLog:[], reactions:[], lastExport:null };
 let state = load();
 maybeWeeklyReset();
 
@@ -679,7 +681,7 @@ $('#noiseTop').addEventListener('click',()=>$('#noise').classList.toggle('open')
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape') closeReader();
   if($('#overlay').classList.contains('open')) return;
-  if(e.key==='1') setPersona('trev'); if(e.key==='2') setPersona('kha'); if(e.key==='3') setPersona('cang');
+  if(e.key==='1') setPersona('trev'); if(e.key==='2') setPersona('kha'); if(e.key==='3') setPersona('cang'); if(e.key==='4') setPersona('hanna');
 });
 
 const io=new IntersectionObserver(es=>{ es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} }); },{threshold:.08,rootMargin:'0px 0px -40px 0px'});
