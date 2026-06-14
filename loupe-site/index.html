@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en" data-persona="trev">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Loupe — scan the noise, keep the gold</title>
+<meta name="description" content="A parse bot that surfaces the 1-in-10 productive signal — 40% you, 60% market force, ~180 words each." />
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,500,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#060607; --ink:#f4f4f6; --muted:#8c8c95; --faint:#5a5a63;
+    --hair:rgba(255,255,255,.09); --hair-2:rgba(255,255,255,.06);
+    --card:#0d0d10; --card-2:#0a0a0c;
+    --ease:cubic-bezier(.32,.72,0,1); --ease-soft:cubic-bezier(.22,.61,.36,1);
+    --accent:#7c6cff; --accent-2:#a78bfa; --glow:rgba(124,108,255,.22);
+  }
+  [data-persona="trev"]{ --accent:#7c6cff; --accent-2:#a78bfa; --glow:rgba(124,108,255,.22); }
+  [data-persona="kha"] { --accent:#ff8a5c; --accent-2:#ffb27a; --glow:rgba(255,138,92,.20); }
+  [data-persona="cang"]{ --accent:#34d39a; --accent-2:#7ff0c2; --glow:rgba(52,211,154,.18); }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{ background:var(--bg); color:var(--ink); font-family:'Satoshi',system-ui,-apple-system,sans-serif;
+    line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden; min-height:100dvh; }
+  .display{ font-family:'Clash Display','Space Grotesk',system-ui,sans-serif; letter-spacing:-.02em; }
+  .mono{ font-family:'Space Grotesk',ui-monospace,monospace; font-variant-numeric:tabular-nums; }
+
+  .bg-orbs{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+  .orb{ position:absolute; border-radius:50%; filter:blur(90px); opacity:.55; transition:background 1.1s var(--ease); }
+  .orb.a{ width:46vw; height:46vw; top:-12vw; right:-8vw; background:radial-gradient(circle at 30% 30%,var(--glow),transparent 70%); }
+  .orb.b{ width:38vw; height:38vw; bottom:-14vw; left:-10vw; background:radial-gradient(circle at 50% 50%,var(--glow),transparent 70%); opacity:.4; }
+  .grain{ position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  nav{ position:fixed; top:0; left:0; right:0; z-index:40; display:flex; justify-content:center; padding-top:22px; pointer-events:none; }
+  .navpill{ pointer-events:auto; display:flex; align-items:center; gap:18px; padding:9px 10px 9px 18px; border-radius:999px;
+    background:rgba(16,16,19,.6); border:1px solid var(--hair); backdrop-filter:blur(20px) saturate(1.4); -webkit-backdrop-filter:blur(20px) saturate(1.4);
+    box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 18px 50px -20px rgba(0,0,0,.8); }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand .mk{ width:30px; height:30px; border-radius:9px; display:grid; place-items:center;
+    background:linear-gradient(160deg,var(--accent),var(--accent-2)); box-shadow:0 0 0 1px rgba(255,255,255,.12) inset,0 6px 18px -6px var(--glow); transition:background 1.1s var(--ease); }
+  .brand .mk svg{ width:17px; height:17px; }
+  .brand b{ font-family:'Clash Display',sans-serif; font-weight:600; font-size:16px; letter-spacing:-.01em; }
+  .brand .dot{ width:5px; height:5px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent); animation:pulse 2.4s var(--ease-soft) infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.35} }
+  .nav-meta{ display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted); padding-right:6px; }
+  .nav-saved{ display:flex; align-items:center; gap:6px; padding:7px 13px; border-radius:999px; background:rgba(255,255,255,.04); border:1px solid var(--hair-2); font-size:12.5px; }
+  .nav-saved svg{ width:13px; height:13px; opacity:.85; }
+
+  main{ position:relative; z-index:2; max-width:1140px; margin:0 auto; padding:0 24px 120px; }
+  .eyebrow{ display:inline-flex; align-items:center; gap:8px; padding:6px 13px; border-radius:999px; background:rgba(255,255,255,.04); border:1px solid var(--hair-2); font-size:10.5px; text-transform:uppercase; letter-spacing:.22em; color:var(--muted); }
+  .eyebrow .led{ width:5px; height:5px; border-radius:50%; background:var(--accent); box-shadow:0 0 7px var(--accent); }
+
+  .hero{ padding:158px 0 50px; }
+  .hero-grid{ display:grid; grid-template-columns:1.35fr .9fr; gap:40px; align-items:end; }
+  .hero h1{ font-family:'Clash Display',sans-serif; font-weight:600; line-height:.95; letter-spacing:-.03em; font-size:clamp(42px,6.6vw,88px); margin:22px 0 0; }
+  .hero h1 .cut{ color:transparent; background:linear-gradient(120deg,var(--accent),var(--accent-2)); -webkit-background-clip:text; background-clip:text; transition:background 1.1s var(--ease); }
+  .hero .sub{ color:var(--muted); font-size:16px; max-width:40ch; margin-top:20px; }
+  .hero .sub b{ color:var(--ink); font-weight:500; }
+  .bigstat{ text-align:right; }
+  .bigstat .num{ font-family:'Clash Display',sans-serif; font-weight:700; font-size:clamp(70px,11vw,140px); line-height:.85; color:transparent; background:linear-gradient(140deg,var(--accent-2),var(--accent)); -webkit-background-clip:text; background-clip:text; transition:background 1.1s var(--ease); }
+  .bigstat .lab{ font-size:11px; text-transform:uppercase; letter-spacing:.24em; color:var(--muted); margin-top:6px; }
+
+  .statrow{ display:flex; gap:10px; margin-top:36px; flex-wrap:wrap; }
+  .chip{ display:flex; flex-direction:column; gap:3px; padding:13px 18px; border-radius:16px; background:rgba(255,255,255,.025); border:1px solid var(--hair-2); min-width:104px; }
+  .chip .v{ font-family:'Space Grotesk',sans-serif; font-size:23px; font-variant-numeric:tabular-nums; }
+  .chip .k{ font-size:10.5px; text-transform:uppercase; letter-spacing:.16em; color:var(--faint); }
+
+  .shell{ background:rgba(255,255,255,.035); border:1px solid var(--hair); border-radius:30px; padding:7px; box-shadow:0 30px 80px -40px rgba(0,0,0,.9); }
+  .core{ background:linear-gradient(180deg,var(--card),var(--card-2)); border-radius:24px; box-shadow:inset 0 1px 1px rgba(255,255,255,.06); }
+
+  /* control matrix */
+  .matrix{ margin-top:18px; }
+  .strip{ display:flex; align-items:center; justify-content:space-between; gap:20px; padding:18px 28px; border-bottom:1px solid var(--hair-2); flex-wrap:wrap; }
+  .mix{ flex:1; min-width:260px; }
+  .mix .mxhead{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--muted); margin-bottom:9px; }
+  .mix .mxhead b{ color:var(--ink); font-weight:500; }
+  .mix .mxhead .you{ color:var(--accent-2); }
+  .splitbar{ height:7px; border-radius:99px; overflow:hidden; display:flex; background:rgba(255,255,255,.07); }
+  .splitbar .you{ background:linear-gradient(90deg,var(--accent),var(--accent-2)); transition:width .6s var(--ease); }
+  .splitbar .mkt{ background:rgba(255,255,255,.16); transition:width .6s var(--ease); }
+  .mixslider{ -webkit-appearance:none; appearance:none; width:100%; height:3px; margin-top:12px; border-radius:99px; background:rgba(255,255,255,.12); cursor:pointer; outline:none; }
+  .mixslider::-webkit-slider-thumb{ -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:#fff; box-shadow:0 0 0 4px var(--glow); }
+  .mixslider::-moz-range-thumb{ width:14px; height:14px; border:none; border-radius:50%; background:#fff; box-shadow:0 0 0 4px var(--glow); }
+  .reset{ display:flex; align-items:center; gap:14px; }
+  .reset .rt{ text-align:right; }
+  .reset .rt .b{ font-size:13px; color:var(--ink); }
+  .reset .rt .s{ font-size:11px; color:var(--faint); }
+  .reset button{ display:flex; align-items:center; gap:7px; padding:9px 14px; border-radius:99px; cursor:pointer; background:rgba(255,255,255,.04); border:1px solid var(--hair-2); color:var(--muted); font-size:12.5px; font-family:inherit; transition:all .4s var(--ease); }
+  .reset button:hover{ color:var(--ink); border-color:var(--accent); background:var(--glow); }
+  .reset button svg{ width:14px; height:14px; }
+
+  .mcols{ display:grid; grid-template-columns:1fr 1fr 1fr; }
+  .mcol{ padding:24px 28px; border-right:1px solid var(--hair-2); }
+  .mcol:last-child{ border-right:none; }
+  .mhead{ font-size:11px; text-transform:uppercase; letter-spacing:.18em; color:var(--faint); margin-bottom:16px; }
+
+  .persona-switch{ display:flex; flex-direction:column; gap:8px; }
+  .pbtn{ display:flex; align-items:center; gap:13px; padding:11px 13px; border-radius:14px; cursor:pointer; background:transparent; border:1px solid transparent; color:var(--muted); transition:all .5s var(--ease); text-align:left; width:100%; }
+  .pbtn:hover{ background:rgba(255,255,255,.03); }
+  .pbtn .av{ width:34px; height:34px; border-radius:10px; display:grid; place-items:center; font-family:'Clash Display',sans-serif; font-weight:600; font-size:14px; background:rgba(255,255,255,.05); border:1px solid var(--hair-2); color:var(--ink); transition:all .5s var(--ease); flex:none; }
+  .pbtn .pn{ font-weight:600; color:var(--ink); font-size:14.5px; }
+  .pbtn .pt{ font-size:11px; color:var(--faint); }
+  .pbtn[aria-selected="true"]{ background:rgba(255,255,255,.05); border-color:var(--hair); }
+  .pbtn[aria-selected="true"] .av{ background:linear-gradient(150deg,var(--accent),var(--accent-2)); border-color:transparent; color:#0a0a0c; box-shadow:0 6px 18px -6px var(--glow); }
+
+  .gate-val{ font-family:'Clash Display',sans-serif; font-weight:600; font-size:44px; letter-spacing:-.02em; line-height:1; }
+  .gate-val small{ font-size:16px; color:var(--muted); font-weight:500; }
+  .slider{ -webkit-appearance:none; appearance:none; width:100%; height:4px; border-radius:99px; margin:20px 0 12px; background:linear-gradient(90deg,var(--accent) var(--fill,40%),rgba(255,255,255,.1) var(--fill,40%)); cursor:pointer; outline:none; }
+  .slider::-webkit-slider-thumb{ -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 0 0 4px var(--glow),0 4px 10px rgba(0,0,0,.5); transition:transform .3s var(--ease); }
+  .slider::-webkit-slider-thumb:hover{ transform:scale(1.18); }
+  .slider::-moz-range-thumb{ width:18px; height:18px; border:none; border-radius:50%; background:#fff; box-shadow:0 0 0 4px var(--glow); }
+  .gate-note{ font-size:12px; color:var(--muted); line-height:1.45; }
+  .gate-note b{ color:var(--accent-2); font-weight:500; }
+
+  .bars{ display:flex; flex-direction:column; gap:10px; }
+  .bar .row{ display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; color:var(--muted); text-transform:capitalize; }
+  .bar .row b{ color:var(--ink); font-weight:500; }
+  .bar .track{ height:5px; border-radius:99px; background:rgba(255,255,255,.07); overflow:hidden; }
+  .bar .fill{ height:100%; border-radius:99px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); transition:width .7s var(--ease); }
+  .learn-hint{ margin-top:15px; font-size:11px; color:var(--faint); display:flex; align-items:center; gap:7px; line-height:1.4; }
+
+  .feed-head{ display:flex; align-items:baseline; justify-content:space-between; margin:60px 0 22px; gap:16px; flex-wrap:wrap; }
+  .feed-head h2{ font-family:'Clash Display',sans-serif; font-weight:600; font-size:26px; letter-spacing:-.02em; }
+  .feed-head h2 span{ color:var(--accent-2); transition:color 1.1s var(--ease); }
+  .feed-head .cnt{ font-size:13px; color:var(--muted); }
+
+  .feed{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+  .card{ opacity:0; transform:translateY(28px); filter:blur(6px); transition:opacity .7s var(--ease),transform .7s var(--ease),filter .7s var(--ease); }
+  .card.in{ opacity:1; transform:none; filter:none; }
+  .card.feature{ grid-column:span 2; }
+  .card .core{ padding:24px; height:100%; display:flex; flex-direction:column; gap:14px; position:relative; overflow:hidden; cursor:pointer; transition:transform .6s var(--ease),box-shadow .6s var(--ease); }
+  .card .core:hover{ transform:translateY(-4px); box-shadow:inset 0 1px 1px rgba(255,255,255,.08),0 24px 60px -34px var(--glow); }
+  .card.saved .core{ box-shadow:inset 0 0 0 1px var(--accent),inset 0 1px 1px rgba(255,255,255,.08); }
+
+  .ctop{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .src{ display:flex; align-items:center; gap:9px; font-size:12px; color:var(--muted); min-width:0; }
+  .src .ico{ width:26px; height:26px; border-radius:8px; display:grid; place-items:center; background:rgba(255,255,255,.05); border:1px solid var(--hair-2); flex:none; }
+  .src .ico svg{ width:14px; height:14px; stroke:var(--ink); opacity:.8; fill:none; }
+  .src .meta{ display:flex; flex-direction:column; line-height:1.25; min-width:0; }
+  .src .meta b{ color:var(--ink); font-weight:500; font-size:12.5px; }
+  .src .meta span{ color:var(--faint); font-size:11px; }
+  .badges{ display:flex; align-items:center; gap:7px; flex:none; }
+  .stretch{ font-size:10px; text-transform:uppercase; letter-spacing:.12em; padding:4px 9px; border-radius:99px; color:var(--accent-2); background:var(--glow); border:1px solid color-mix(in srgb,var(--accent) 40%,transparent); }
+  .age{ font-size:11px; color:var(--faint); }
+  .srclink{ font-size:11px; color:var(--faint); text-decoration:none; padding:3px 9px; border-radius:99px; border:1px solid var(--hair-2); white-space:nowrap; transition:all .4s var(--ease); }
+  .srclink:hover{ color:var(--accent-2); border-color:var(--accent); background:var(--glow); }
+
+  .card h3{ font-family:'Clash Display',sans-serif; font-weight:500; letter-spacing:-.01em; line-height:1.12; font-size:19px; }
+  .card.feature h3{ font-size:29px; max-width:18ch; }
+  .gist{ color:var(--muted); font-size:14px; line-height:1.55; }
+  .card.feature .gist{ font-size:15px; max-width:54ch; }
+
+  .lenses{ display:flex; flex-wrap:wrap; gap:6px; }
+  .lens{ font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; padding:4px 9px; border-radius:7px; background:rgba(255,255,255,.04); border:1px solid var(--hair-2); color:var(--faint); }
+
+  .metrics{ display:flex; align-items:center; gap:18px; margin-top:auto; padding-top:6px; }
+  .ring{ position:relative; width:46px; height:46px; flex:none; }
+  .ring svg{ transform:rotate(-90deg); }
+  .ring .val{ position:absolute; inset:0; display:grid; place-items:center; font-family:'Space Grotesk',sans-serif; font-size:13px; font-variant-numeric:tabular-nums; font-weight:500; }
+  .mbars{ flex:1; display:flex; flex-direction:column; gap:8px; }
+  .mline .ml{ display:flex; justify-content:space-between; font-size:10.5px; color:var(--faint); text-transform:uppercase; letter-spacing:.1em; margin-bottom:4px; }
+  .mline .ml b{ color:var(--accent-2); }
+  .mline .ml .mk2{ color:var(--muted); }
+  .mline .mt{ height:4px; border-radius:99px; background:rgba(255,255,255,.07); overflow:hidden; }
+  .mline .mf{ height:100%; border-radius:99px; transition:width .7s var(--ease); }
+  .mf.you{ background:linear-gradient(90deg,var(--accent),var(--accent-2)); }
+  .mf.mkt{ background:rgba(255,255,255,.32); }
+
+  .why{ font-size:12px; color:var(--faint); display:flex; align-items:center; gap:8px; }
+  .why .sp{ color:var(--accent); }
+  .tags{ display:flex; flex-wrap:wrap; gap:6px; }
+  .tag{ font-size:11px; padding:5px 10px; border-radius:99px; background:rgba(255,255,255,.04); border:1px solid var(--hair-2); color:var(--muted); cursor:pointer; transition:all .4s var(--ease); text-transform:capitalize; }
+  .tag:hover{ color:var(--ink); border-color:var(--accent); background:var(--glow); }
+
+  .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .act{ display:flex; align-items:center; gap:7px; padding:9px 14px; border-radius:99px; cursor:pointer; text-decoration:none; background:rgba(255,255,255,.04); border:1px solid var(--hair-2); color:var(--muted); font-size:12.5px; font-family:inherit; transition:all .4s var(--ease); }
+  .act:hover{ color:var(--ink); border-color:var(--hair); background:rgba(255,255,255,.07); }
+  .act:active{ transform:scale(.96); }
+  .act svg{ width:14px; height:14px; }
+  .act.primary{ background:#f4f4f6; color:#0a0a0c; border-color:transparent; padding-right:6px; }
+  .act.primary .pin{ width:24px; height:24px; border-radius:50%; background:rgba(0,0,0,.08); display:grid; place-items:center; transition:transform .4s var(--ease); }
+  .act.primary:hover .pin{ transform:translate(2px,-1px) scale(1.06); }
+  .act.on{ color:var(--accent-2); border-color:var(--accent); background:var(--glow); }
+
+  /* noise */
+  .noise{ margin-top:24px; }
+  .noise .core{ padding:20px 24px; }
+  .noise-top{ display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+  .noise-top .l{ display:flex; align-items:center; gap:13px; }
+  .noise-top .ic{ width:34px; height:34px; border-radius:10px; display:grid; place-items:center; background:rgba(255,255,255,.04); border:1px solid var(--hair-2); }
+  .noise-top .ic svg{ width:16px; height:16px; stroke:var(--faint); fill:none; }
+  .noise-top h4{ font-size:15px; font-weight:600; }
+  .noise-top p{ font-size:12.5px; color:var(--faint); }
+  .chev{ transition:transform .5s var(--ease); color:var(--faint); }
+  .noise.open .chev{ transform:rotate(180deg); }
+  .noise-list{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .6s var(--ease); }
+  .noise.open .noise-list{ grid-template-rows:1fr; }
+  .noise-list > div{ overflow:hidden; }
+  .ni{ display:flex; align-items:center; gap:14px; padding:13px 2px; border-top:1px solid var(--hair-2); }
+  .ni:first-child{ margin-top:16px; }
+  .ni .x{ font-family:'Space Grotesk',sans-serif; font-size:12px; color:#d4524e; width:30px; font-variant-numeric:tabular-nums; flex:none; }
+  .ni .nt{ flex:1; font-size:13.5px; color:var(--muted); }
+  .ni .rs{ font-size:11.5px; color:var(--faint); text-align:right; }
+
+  footer{ margin-top:56px; padding-top:24px; border-top:1px solid var(--hair-2); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:12px; color:var(--faint); }
+  footer b{ color:var(--muted); font-weight:500; }
+
+  /* reader modal */
+  .overlay{ position:fixed; inset:0; z-index:70; display:flex; align-items:center; justify-content:center; padding:24px; opacity:0; pointer-events:none; transition:opacity .5s var(--ease); }
+  .overlay::before{ content:""; position:absolute; inset:0; background:rgba(4,4,6,.72); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+  .overlay.open{ opacity:1; pointer-events:auto; }
+  .reader{ position:relative; width:min(640px,100%); max-height:88dvh; overflow:auto; transform:translateY(24px) scale(.98); transition:transform .6s var(--ease); }
+  .overlay.open .reader{ transform:none; }
+  .reader .core{ padding:32px; }
+  .reader .rclose{ position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; display:grid; place-items:center; cursor:pointer; background:rgba(255,255,255,.05); border:1px solid var(--hair-2); color:var(--muted); transition:all .4s var(--ease); }
+  .reader .rclose:hover{ color:var(--ink); border-color:var(--hair); }
+  .reader .rclose svg{ width:15px; height:15px; }
+  .reader h2{ font-family:'Clash Display',sans-serif; font-weight:600; font-size:27px; line-height:1.1; letter-spacing:-.02em; margin:14px 0 6px; max-width:24ch; }
+  .reader .rmeta{ display:flex; align-items:center; gap:10px; font-size:12px; color:var(--faint); margin-bottom:18px; flex-wrap:wrap; }
+  .reader .rmeta .pwc{ color:var(--accent-2); }
+  .seg{ padding:16px 0; border-top:1px solid var(--hair-2); }
+  .seg h5{ font-size:10.5px; text-transform:uppercase; letter-spacing:.18em; color:var(--accent); margin-bottom:7px; display:flex; align-items:center; gap:8px; }
+  .seg p{ font-size:14.5px; color:var(--ink); line-height:1.62; opacity:.92; }
+  .rscore{ display:flex; gap:10px; margin:18px 0 4px; flex-wrap:wrap; }
+  .rsc{ flex:1; min-width:120px; padding:12px 14px; border-radius:14px; background:rgba(255,255,255,.025); border:1px solid var(--hair-2); }
+  .rsc .v{ font-family:'Space Grotesk',sans-serif; font-size:20px; font-variant-numeric:tabular-nums; }
+  .rsc .k{ font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:var(--faint); margin-top:2px; }
+  .reader .actions{ margin-top:20px; }
+
+  .toast{ position:fixed; bottom:26px; left:50%; transform:translate(-50%,140%); z-index:80; display:flex; align-items:center; gap:10px; padding:12px 18px; border-radius:99px; background:rgba(16,16,19,.86); border:1px solid var(--hair); backdrop-filter:blur(20px); font-size:13px; box-shadow:0 18px 50px -20px rgba(0,0,0,.9); transition:transform .6s var(--ease); }
+  .toast.show{ transform:translate(-50%,0); }
+  .toast .d{ width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent); }
+
+  @media (max-width:880px){
+    .hero{ padding:128px 0 36px; }
+    .hero-grid{ grid-template-columns:1fr; gap:22px; align-items:start; }
+    .bigstat{ text-align:left; }
+    .mcols{ grid-template-columns:1fr; }
+    .mcol{ border-right:none; border-bottom:1px solid var(--hair-2); }
+    .mcol:last-child{ border-bottom:none; }
+    .strip{ flex-direction:column; align-items:stretch; }
+    .feed{ grid-template-columns:1fr; }
+    .card.feature{ grid-column:span 1; }
+    .card.feature h3{ font-size:23px; }
+    .nav-meta{ display:none; }
+    .reader .core{ padding:24px; }
+  }
+  @media (prefers-reduced-motion:reduce){ *{ animation:none!important; transition-duration:.01ms!important; } }
+</style>
+</head>
+<body>
+  <div class="bg-orbs"><div class="orb a"></div><div class="orb b"></div></div>
+  <div class="grain"></div>
+
+  <nav><div class="navpill">
+    <div class="brand">
+      <span class="mk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0c" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.2"/><path d="M15.2 15.2 L21 21"/></svg></span>
+      <b>Loupe</b><span class="dot" title="live"></span>
+    </div>
+    <div class="nav-meta">40% you · 60% market · ~180 words</div>
+    <div class="nav-saved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 4h12v16l-6-4-6 4z"/></svg><span id="savedCount">0 saved</span></div>
+  </div></nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow"><span class="led"></span><span id="heroEye">Today · Trev's lens</span></span>
+          <h1 class="display">The <span class="cut" id="heroCutPct">46%</span><br/>that wasn't<br/>worth it.</h1>
+          <p class="sub"><b>40% what you want, 60% what the market makes you face</b> — so you sharpen instead of rotting in a bubble. Every item capped at ~180 words: what's new, who it hits, where's the profit, how it shifts your thinking.</p>
+        </div>
+        <div class="bigstat"><div class="num" id="heroKept">17</div><div class="lab">signals kept today</div></div>
+      </div>
+      <div class="statrow">
+        <div class="chip"><span class="v mono" id="stIntake">29</span><span class="k">sample intake</span></div>
+        <div class="chip"><span class="v mono" id="stSurfaced">17</span><span class="k">surfaced</span></div>
+        <div class="chip"><span class="v mono" id="stCut">12</span><span class="k">cut as noise</span></div>
+        <div class="chip"><span class="v mono" id="stWords">~150</span><span class="k">words each</span></div>
+      </div>
+    </section>
+
+    <section class="matrix shell"><div class="core">
+      <div class="strip">
+        <div class="mix">
+          <div class="mxhead"><span><b class="you" id="mixYou">40%</b> your taste</span><span><b id="mixMkt">60%</b> market force</span></div>
+          <div class="splitbar"><div class="you" id="splitYou" style="width:40%"></div><div class="mkt" id="splitMkt" style="width:60%"></div></div>
+          <input type="range" min="0" max="100" value="40" class="mixslider" id="mix" />
+        </div>
+        <div class="reset">
+          <div class="rt"><div class="b" id="resetIn">Bubble refresh in 7d</div><div class="s">weekly: learned bias decays toward neutral</div></div>
+          <button id="resetBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 4v4h4"/></svg> Refresh now</button>
+        </div>
+      </div>
+      <div class="mcols">
+        <div class="mcol">
+          <div class="mhead">Operator</div>
+          <div class="persona-switch" id="personaSwitch" role="tablist"></div>
+        </div>
+        <div class="mcol">
+          <div class="mhead">Productivity gate</div>
+          <div class="gate-val mono"><span id="gateNum">65</span><small> / 100</small></div>
+          <input type="range" min="50" max="92" value="65" class="slider" id="gate" />
+          <p class="gate-note">Below this, it dies — <b>no matter how much you'd like it</b>. The gate is what stops Loupe becoming a doomscroll. Drag up to be ruthless.</p>
+        </div>
+        <div class="mcol">
+          <div class="mhead">Interest matrix · <span id="barsWho">Trev</span></div>
+          <div class="bars" id="bars"></div>
+          <div class="learn-hint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2 2M16.4 16.4l2 2M18.4 5.6l-2 2M7.6 16.4l-2 2"/></svg> <span id="learnHint">learns from your clicks, saves & More/Less</span></div>
+        </div>
+      </div>
+    </div></section>
+
+    <div class="feed-head">
+      <h2 class="display">Surfaced for <span id="feedWho">Trev</span></h2>
+      <div class="cnt" id="feedCnt"></div>
+    </div>
+    <section class="feed" id="feed"></section>
+
+    <section class="noise shell" id="noise"><div class="core">
+      <div class="noise-top" id="noiseTop">
+        <div class="l">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></span>
+          <div><h4>Cut as noise — <span id="noiseN" class="mono">12</span> items</h4><p>What a normal feed would've fed you. Tap to see what died at the gate.</p></div>
+        </div>
+        <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg></span>
+      </div>
+      <div class="noise-list"><div id="noiseList"></div></div>
+    </div></section>
+
+    <footer>
+      <span>Loupe · Phase-0 prototype · scoring + learning run <b>locally in your browser</b></span>
+      <span id="feedSrcNote">seeded sample · live RSS + GDELT + HN + arXiv → ~180-word digest → this feed (auto-built daily)</span>
+    </footer>
+  </main>
+
+  <div class="overlay" id="overlay"><div class="reader shell"><div class="core" id="readerCore"></div></div></div>
+  <div class="toast" id="toast"><span class="d"></span><span id="toastMsg"></span></div>
+
+<script>
+/* ============================ PERSONAS ============================ */
+const PERSONAS = {
+  trev:{ name:'Trev', type:'INTJ · architect',
+    interests:{ strategy:.92,frameworks:.9,thinking:.88,ai:.82,tech:.8,dev:.74,tools:.72,architecture:.6,hardware:.62,business:.5,execution:.5,automation:.6,market:.5 } },
+  kha:{ name:'Kha', type:'ENFP · catalyst',
+    interests:{ creativity:.95,design:.9,story:.86,marketing:.74,leadership:.6,'self-help':.62,productivity:.55,architecture:.62,ai:.5,innovation:.85,thinking:.5,business:.45 } },
+  cang:{ name:'Cang', type:'ENTJ · commander',
+    interests:{ execution:.92,growth:.9,business:.9,sales:.86,leadership:.85,market:.82,procurement:.8,strategy:.76,ops:.72,ai:.6,regulation:.6,construction:.55,germany:.6 } },
+};
+
+/* ============================ ITEMS ============================ */
+/* prod = productivity (the gate) · market = how hard the world is pushing it (60% of rank) */
+let ITEMS = [
+  { id:'n1', src:'news', title:'NVIDIA unveils Rubin-class inference GPU — 4× tokens per dollar', prod:93, market:95, mins:4, age:'2h', topics:{ai:1,hardware:.9,tech:.7,strategy:.5,market:.5},
+    gist:'Optimizes cost-per-token, not peak FLOPs — a quiet shift from "fastest chip" to "cheapest inference at scale."',
+    digest:{ new:'Rubin abandons the FLOPs race and optimizes for cost-per-token — the metric that actually decides whether an AI product makes money. It is a generational pivot from "fastest chip on a benchmark" to "cheapest inference at production scale."', affect:'If anything you run touches an LLM, your unit economics just shifted overnight. Workloads that were too expensive to ship — long context, agentic loops, a model per customer — quietly cross into viable territory.', profit:'Re-open every AI feature you shelved on cost and re-quote it. There is fresh margin in products priced per token, and a real window to undercut competitors still paying for last-generation hardware.', shift:'Stop optimizing models for leaderboards and start optimizing the business for dollars-per-token. Compute is becoming a commodity input you arbitrage, not a trophy you chase.', move:'List the AI features you killed on cost, re-price your top two against $/token this week, and ship the cheapest to prove it.' } },
+  { id:'pa1', src:'paper', title:'Small models + retrieval match frontier LLMs on factual QA', prod:90, market:72, mins:9, age:'1d', topics:{ai:1,dev:.8,frameworks:.7,thinking:.6,tools:.6},
+    gist:'Peer-reviewed: a well-retrieved small model rivals a giant one on facts — at a fraction of the cost.',
+    digest:{ new:'A peer-reviewed study shows small models, given strong retrieval, match or beat much larger ones on factual QA — at a fraction of the compute and latency. The win comes from feeding the model the right context, not from raw parameter count.', affect:'This directly validates building products like Loupe on cheap models plus retrieval instead of expensive frontier calls. The quality ceiling you assumed needed a giant model is reachable with a small one and a good index.', profit:'Expect roughly 10× lower inference cost for equivalent output quality. That gap is pure margin you keep — or the price headroom you use to undercut rivals still burning money on oversized models.', shift:'Bigger isn’t better; well-fed small beats hungry large. The durable edge is your architecture and data plumbing, not the size of the model you rent.', move:'Prototype Loupe’s matcher on a small model plus retrieval before you reach for a frontier API — prove the quality bar at a tenth of the cost.' } },
+  { id:'c1', src:'conference', title:'Bootstrapping to $10M ARR without raising a cent', prod:88, market:60, mins:22, age:'1d', topics:{business:1,growth:.9,execution:.8,strategy:.6,sales:.6},
+    gist:'Distribution-first: own a channel before you build the product. Concrete moves, zero motivational fluff.',
+    digest:{ new:'A founder breaks down reaching $10M ARR with zero outside funding by building and owning a distribution channel years before the product existed. The audience came first; the product was simply the thing they eventually sold to it.', affect:'It reframes "build it and they will come." For a lean team the audience is the real moat — features get copied in a quarter, but an owned channel and earned trust compound and cannot be cloned.', profit:'Audit where your buyers already gather and go own that surface now — a newsletter, a community, a feed. Monetize the attention second; the channel is the asset that lets every future launch start at non-zero.', shift:'Capital isn’t your constraint, distribution is. Treat the channel as the primary asset and the product as merely its expression.', move:'Name the one channel your buyers already trust, and commit to publishing there weekly before you build a single new feature.' } },
+  { id:'h1', src:'hn', title:'Show HN: open-source RSS + LLM briefing engine', prod:86, market:55, mins:6, age:'3h', topics:{ai:.8,dev:1,tools:.9,tech:.7},
+    gist:'A self-hosted pipeline that clusters and summarizes feeds — basically Loupe’s engine, in the open.',
+    digest:{ new:'An open-source pipeline that clusters and summarizes feeds into a daily brief just hit the front page — it is essentially the engine behind Loupe, released for anyone to run.', affect:'You can fork the genuinely hard parts — dedupe, clustering, scheduling, retries — instead of building ingestion from scratch. The boring 70% of the build is now a download.', profit:'That cuts your time-to-working-prototype from weeks to days. Spend the saved weeks on the interest matrix and editorial taste, the part competitors can’t copy and customers actually pay for.', shift:'The plumbing is commoditized; your defensibility is curation and personalization, never the pipes. Build where the moat is, borrow everywhere else.', move:'Fork it this weekend, point it at five of your own feeds, watch a brief generate — then decide what only you can build on top.' } },
+  { id:'s1', src:'substack', title:'Second-order thinking as an operating system', prod:85, market:45, mins:7, age:'6h', topics:{frameworks:1,thinking:.95,strategy:.8},
+    gist:'A framework for habitually asking "and then what?" before you commit — decision hygiene for strategists.',
+    digest:{ new:'A framework for systematically asking "and then what?" across two or three layers of consequence before committing to a decision, instead of stopping at the first obvious payoff.', affect:'Most bad calls are first-order wins that carry hidden second-order costs — the discount that trains customers to wait, the hire that fixes this quarter and breaks next year. This habit catches them before you commit resources.', profit:'Apply it to pricing, hiring and tender bids: model how the other side reacts to your move, then price that reaction in upfront. You stop winning battles that quietly lose the war.', shift:'Decisions aren’t events, they’re chains. Train yourself to think in ripples, not splashes.', move:'On your next big decision, write the second- and third-order effects in one line each before committing. If layer two is ugly, kill it.' } },
+  { id:'pa2', src:'paper', title:'Pricing power decides who survives inflation', prod:85, market:66, mins:8, age:'2d', topics:{business:1,market:.9,strategy:.7,thinking:.6},
+    gist:'Economics paper: firms with pricing power pass inflation through fast; commodities eat the loss.',
+    digest:{ new:'An economics paper quantifies how firms with genuine pricing power pass cost inflation through to customers quickly, while commoditized players are forced to absorb it and watch margins erode.', affect:'It explains, with data, why differentiated businesses hold margin through downturns and undifferentiated ones quietly bleed out. Where you sit on that spectrum predicts how the next shock treats you.', profit:'Invest now in the concrete sources of pricing power — brand, switching costs, a defended niche, proprietary data. Each one is a direct hedge that lets you raise prices without losing the room.', shift:'Margin is a function of power, not cost discipline. Spend your energy earning the right to set the price, not just shaving the price you’re forced to take.', move:'Pick the single strongest source of pricing power you could build this quarter, and start it before the next cost shock lands.' } },
+  { id:'t1', src:'tiktok', title:'A founder breaks down B2B pricing in 58 seconds', prod:84, market:50, mins:1, age:'5h', topics:{sales:1,strategy:.8,business:.7},
+    gist:'Anchor high, sell the outcome, engineer the mid-tier to be the obvious yes.',
+    digest:{ new:'A 58-second teardown of B2B pricing: anchor high to set the reference point, sell the outcome rather than the feature list, and deliberately engineer the mid-tier so it is the obvious "yes."', affect:'If your middle option isn’t consciously designed as the default, your pricing page leaks money every day — buyers anchor on the wrong number and quietly self-select down to it.', profit:'Add a deliberately expensive top tier as a decoy and watch mid-tier conversion and average deal size climb with zero new product built. It is margin from layout, not labor.', shift:'Price is positioning, not arithmetic. You’re selling a decision, not a number — so design the decision.', move:'Add a deliberately pricey top tier to your pricing page and watch mid-tier conversion for two weeks.' } },
+  { id:'y2', src:'youtube', title:'RAG, embeddings & rerankers — the 12-minute mental model', prod:83, market:65, mins:12, age:'1d', topics:{ai:.9,dev:.9,tools:.7,frameworks:.5},
+    gist:'The clearest explainer of the exact stack behind a curation feed. No hand-waving.',
+    digest:{ new:'A 12-minute mental model of embeddings, retrieval and rerankers — the precise stack that sits behind any modern curation or "for you" feed, explained without the usual hand-waving.', affect:'It demystifies exactly what you’d build for dedupe and interest-matching in a product like Loupe, turning a vague "use AI" into a concrete set of components you can reason about and cost.', profit:'Understanding the stack lets you scope the build accurately, hire the right one person instead of three, and avoid getting locked into a vendor who marks up commodity infrastructure.', shift:'Search is no longer about keywords; it’s about meaning-space. Once you think in vectors instead of strings, a lot of product ideas suddenly become buildable.', move:'Sketch your feed’s retrieval flow on one page — embed, store, match, rerank — and cost each step before you write any code.' } },
+  { id:'y1', src:'youtube', title:'Wiring an AI agent for outbound that actually books calls', prod:82, market:58, mins:18, age:'10h', topics:{ai:.8,sales:.9,automation:.8,tools:.7,execution:.6},
+    gist:'End-to-end build: enrichment → personalization → guardrails that book real meetings.',
+    digest:{ new:'A full, end-to-end build of an outbound agent — lead enrichment, message personalization, and guardrails that keep it on-brand — that actually books qualified meetings rather than spraying spam.', affect:'Outbound that used to be manual, inconsistent and impossible to scale becomes a system a small team can run and improve. The floor work that ate your reps’ days gets automated away.', profit:'Reuse the exact pattern for your own pipeline: more qualified conversations per rep-hour and a lower fully-loaded cost per booked meeting. It is leverage on the most expensive part of sales.', shift:'Agents don’t replace your people — they strip out the repetitive floor work so humans spend their hours on judgment, relationships and closing.', move:'Automate one repetitive outbound step this week; expand the system only after it books a real meeting.' } },
+  { id:'n2', src:'news', title:'EU tightens public-procurement e-tendering rules for 2027', prod:79, market:70, mins:5, age:'9h', topics:{procurement:1,regulation:.9,construction:.7,business:.6,germany:.5},
+    gist:'A new machine-readable submission standard — direct impact on anyone bidding public works.',
+    digest:{ new:'The EU is tightening public-procurement e-tendering with a new machine-readable submission standard that takes effect in 2027, changing how bids must be formatted and filed.', affect:'Anyone bidding public works will have to adapt their submission pipeline or risk outright disqualification on a technicality — the rules of the game change regardless of how strong your actual bid is.', profit:'Early compliance is a quiet moat. Get machine-ready well before the deadline and you win contracts while competitors are still scrambling to interpret the standard; readiness itself becomes a selling point.', shift:'Regulation isn’t only a cost to absorb; first-movers turn forced compliance into competitive advantage. Treat every new rule as a possible moat.', move:'Audit one current bid against the 2027 machine-readable standard now, so compliance becomes a head-start instead of a fire drill.' } },
+  { id:'n3', src:'news', title:'German construction-tech startup raises €40M for AI estimating', prod:80, market:62, mins:3, age:'12h', topics:{construction:1,tech:.8,market:.9,germany:.7,ai:.6,business:.6},
+    gist:'Signals where build-industry tooling money is moving. Watch the estimating layer.',
+    digest:{ new:'A German construction-tech startup just raised €40M specifically to build AI estimating tools — a strong signal of where serious capital believes the build industry’s next leverage point sits.', affect:'When smart money concentrates on the estimating layer, it is telling you that is where margin and win-rate get decided next. Firms still estimating the old way will feel the squeeze first.', profit:'Adopt or partner early. Faster, more accurate estimating is a direct lever on tender win-rate and on the margin you can safely bid — both of which flow straight to the bottom line.', shift:'The industry’s edge is migrating from labor to tooling. Watch the software stack as closely as you watch the site.', move:'Trial one AI estimating tool on a live tender and compare its number and speed against your manual baseline.' } },
+  { id:'p1', src:'podcast', title:'Running an async team across six time zones', prod:78, market:42, mins:14, age:'1d', topics:{leadership:.9,ops:1,productivity:.7,execution:.6},
+    gist:'Rituals that replace status meetings with written, async decisions.',
+    digest:{ new:'A set of concrete operating rituals that replace status meetings with written, asynchronous decisions — built for a team spread across many time zones who can rarely all be online at once.', affect:'If your team spans countries, synchronous meetings are a quiet tax on everyone’s best hours. Moving to written-first reclaims those hours and, by forcing clarity, actually sharpens the decisions themselves.', profit:'You get more shipping per headcount. A written, async culture scales output and onboarding without adding layers of managers whose only real job is relaying information in meetings.', shift:'Meetings are a default, not a necessity. Write first, and meet only to make the decision that writing couldn’t.', move:'Replace your next status meeting with a written update and see what actually breaks — usually nothing.' } },
+  { id:'pa3', src:'paper', title:'The true cost of context-switching, quantified', prod:84, market:50, mins:7, age:'2d', topics:{productivity:1,thinking:.7,'self-help':.6,ops:.5},
+    gist:'Cognitive-science paper puts a real number on interruptions — far more than the minutes lost.',
+    digest:{ new:'A cognitive-science paper puts a hard number on context-switching, showing each interruption costs far more than the few visible minutes it appears to take — the real bill is the slow climb back into deep focus.', affect:'Your fragmented, meeting-shredded calendar is quietly destroying output that never shows up on a timesheet. You feel busy and produce little, and now there is data explaining exactly why.', profit:'Batch shallow work into windows and ruthlessly defend two focus blocks a day. You reclaim hours of hidden capacity — effectively a free productivity hire — without spending a cent.', shift:'Time isn’t the unit of work; attention is. Start guarding attention the way you guard capital.', move:'Block two no-meeting focus windows on tomorrow’s calendar and defend them like client time.' } },
+  { id:'r1', src:'reel', title:'Parametric façade detailing nobody teaches', prod:81, market:40, mins:1, age:'8h', topics:{design:.9,architecture:1,construction:.8,creativity:.7},
+    gist:'A 15-second walkthrough of a panel system that cuts material waste.',
+    digest:{ new:'A 15-second walkthrough of a parametric façade panel system that measurably reduces material waste — the kind of detailing that rarely makes it into standard training but quietly changes project economics.', affect:'If you bid build work this is directly relevant: it is a concrete differentiator you can bring to a tender when everyone else is proposing the same conventional approach.', profit:'A waste-reducing detail is simultaneously a cost story and a sustainability story — two things you can drop straight into a proposal to justify your number and win on more than price alone.', shift:'Design isn’t decoration; in construction it’s where margin and differentiation actually hide. Treat detailing as a commercial weapon.', move:'File this detail in your proposal library now, with the waste-and-cost line ready to paste into the next bid.' } },
+  { id:'c2', src:'conference', title:'Design systems as a force multiplier for small teams', prod:77, market:48, mins:20, age:'2d', topics:{design:1,dev:.7,creativity:.8,ops:.6,execution:.5},
+    gist:'How 3 people ship like 12 — tokens, primitives, and disciplined "no".',
+    digest:{ new:'A talk on how a three-person team ships like a team of twelve by leaning on design tokens, reusable primitives, and a disciplined willingness to say "no" to one-off work.', affect:'Small teams drown not in work but in re-decisions — re-litigating the same spacing, colors and patterns every week. A system removes that overhead so a tiny team moves with surprising speed.', profit:'Faster, more consistent shipping means more output from the same payroll — you effectively add capacity without adding cost, and the product feels more premium while you’re at it.', shift:'Constraints are speed, not the enemy of it. A system is permission to stop re-deciding the things that were already decided.', move:'Define five reusable primitives for whatever you ship most, and ban one-off variants for a month.' } },
+  { id:'r2', src:'reel', title:'The 3-second hook framework, dissected', prod:76, market:52, mins:1, age:'7h', topics:{creativity:.9,marketing:.9,story:1},
+    gist:'Why the first frame is the whole game — a repeatable hook structure.',
+    digest:{ new:'A creator dissects why the first frame of any piece of content decides its entire fate, and lays out a repeatable hook structure for earning attention in the opening second.', affect:'This applies far beyond video — to your pitches, your ads, the subject line of a cold email, even the first sentence of a tender proposal. Anywhere a human decides whether to keep reading.', profit:'Better hooks lift reach and reply rates at zero extra spend. It is pure efficiency extracted from attention you are already paying to reach — more output from the same distribution.', shift:'Attention is earned in the first second, never assumed. Front-load the value, every single time.', move:'Rewrite the first line of your next proposal or post as a hook, and A/B it against your usual opener.' } },
+  { id:'t2', src:'tiktok', title:'A deep-work routine that survives a chaotic calendar', prod:72, market:38, mins:1, age:'11h', topics:{productivity:1,'self-help':.9,thinking:.5},
+    gist:'Two daily anchors and ruthless single-tasking. A self-help clip with real substance.',
+    digest:{ new:'A deep-work routine built around just two protected anchors a day and ruthless single-tasking — designed specifically to survive a calendar that has been shredded by meetings and interruptions.', affect:'It protects deep work exactly when your day is most fragmented, which is precisely when your highest-value thinking normally dies a quiet death between calls.', profit:'The payoff is more high-leverage output: the strategic work that actually moves revenue — the bid, the hire, the positioning — finally gets done instead of perpetually slipping to "tomorrow."', shift:'Productivity isn’t about more hours; it’s about protecting the few hours that actually compound.', move:'Pick tomorrow’s two anchors tonight, and put your phone in another room for the first one.' } },
+];
+
+let NOISE = [
+  { x:18, t:'Celebrity’s $2M watch collection tour', r:'Status bait · nothing transferable' },
+  { x:9,  t:'POV: it’s Monday 😭 [dance]', r:'Pure dopamine · no payload' },
+  { x:22, t:'You won’t BELIEVE what the market did today', r:'Rage headline · no decision value' },
+  { x:31, t:'10 productivity hacks (that are just buying apps)', r:'Listicle · low substance density' },
+  { x:28, t:'I tried 100 AI tools in 24 hours!!!', r:'Volume bait · no depth per item' },
+  { x:16, t:'This ONE stock will 10x (not financial advice)', r:'Hype · unfalsifiable' },
+  { x:12, t:'Influencer feud escalates in the comments', r:'Drama · irrelevant to your goals' },
+  { x:34, t:'5 morning routines of billionaires', r:'Survivorship theatre' },
+  { x:11, t:'Reacting to creators reacting to creators', r:'Empty recursion' },
+  { x:20, t:'Why you’re broke (it’s the avocado toast)', r:'Moralizing · no model' },
+  { x:25, t:'Unboxing my insane new gaming setup', r:'Consumerism · no idea inside' },
+  { x:14, t:'Hustle harder 🔥 [motivation edit]', r:'Affect, zero information' },
+];
+
+const SRC = {
+  news:{l:'Newsroom',w:'read',ic:'<path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h8M8 17h5"/>'},
+  tiktok:{l:'TikTok',w:'watch',ic:'<path d="M9 5v10.5A2.5 2.5 0 1 1 6.5 13"/><path d="M9 5c.8 2.2 2.4 3.3 4.5 3.5"/>'},
+  reel:{l:'Reel',w:'watch',ic:'<rect x="4" y="5" width="16" height="14" rx="3"/><path d="M10 9l5 3-5 3z"/>'},
+  hn:{l:'Hacker News',w:'read',ic:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 8l3 4 3-4M12 12v4"/>'},
+  youtube:{l:'YouTube',w:'watch',ic:'<rect x="3" y="6" width="18" height="12" rx="3"/><path d="M11 9.5l4 2.5-4 2.5z"/>'},
+  substack:{l:'Substack',w:'read',ic:'<path d="M5 5h14M5 10h14M5 14l7 5 7-5"/>'},
+  podcast:{l:'Podcast',w:'listen',ic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4"/>'},
+  conference:{l:'Conference',w:'watch',ic:'<path d="M4 6h16v10H4z"/><path d="M9 20h6M12 16v4"/>'},
+  paper:{l:'arXiv · paper',w:'read',ic:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 13h5M10 16h4"/>'},
+};
+const LENS_LABELS = { new:"What's new", affect:'How it hits you', profit:'Profit angle', shift:'Mind-shift', move:'Your move' };
+/* ---- Kha's GenZ voice layer (entertainment skin; substance stays real) ---- */
+const KLENS = { new:"the tea ☕", affect:"why u care", profit:"the bag 💰", shift:"brain glow-up 🧠", move:"ok bestie do this" };
+let KHA = {
+  n1:{ gist:"nvidia dropped a chip that makes AI dirt cheap to run — the bag is mathing 📉💰", digest:{ new:"new chip = way cheaper cost per AI answer, not just 'bigger number go brr'", affect:"everything you run on AI just got cheaper overnight, no cap", profit:"those AI features you shelved for being too pricey? back on the menu bestie 🍽️", shift:"stop flexing model size, start counting cost per answer. compute is basically tap water now", move:"list the AI features you killed on cost, re-price the top 2 this week, ship the cheapest 🚀" } },
+  pa1:{ gist:"science says: tiny AI + good notes beats giant AI flexing. david vs goliath fr 🪨", digest:{ new:"small model with good retrieval beats the huge pricey one on facts", affect:"you don't need the $$$ model to be good — lowkey huge", profit:"~10x cheaper for the same vibes = pure profit you pocket 💵", shift:"bigger isn't better, it's giving work-smarter-not-harder", move:"build Loupe's matcher on a small model first, prove it slaps at 1/10 the price" } },
+  c1:{ gist:"founder hit $10M with $0 raised by building the audience FIRST. built different 🛠️", digest:{ new:"got rich by owning the crowd before the product even existed", affect:"audience is the real moat — features get copied in a week bestie", profit:"own a channel your buyers already vibe with, sell to it later", shift:"money isn't the boss fight, distribution is", move:"name the 1 channel your buyers trust + post there weekly before building anything new" } },
+  h1:{ gist:"someone open-sourced basically Loupe's engine. free real estate 🏠", digest:{ new:"open-source bot that clusters + summarizes feeds — aka our backend, but free", affect:"you can borrow the hard 70% instead of building it. big W", profit:"ship in days not weeks, spend the saved time on the fun part", shift:"the plumbing is mid/commodity — your taste is the moat", move:"fork it this weekend, point it at 5 of your feeds, watch a brief drop" } },
+  s1:{ gist:"big-brain trick: always ask 'and THEN what??' before you commit 🧠", digest:{ new:"framework for seeing 2-3 moves ahead, not just the W in front of you", affect:"most Ls are quick Ws that bite later — this catches them", profit:"use it on pricing/hiring/bids, see the plot twist before it happens", shift:"decisions are chains not vibes. think in ripples bestie", move:"next big call, write the 2nd + 3rd order effects in 1 line each. ugly layer 2 = kill it" } },
+  pa2:{ gist:"study: brands with rizz pass inflation to YOU, weak ones eat the L 💀", digest:{ new:"firms with pricing power push costs onto customers fast, mid ones can't", affect:"explains why fancy brands chill in a recession + basic ones get cooked", profit:"build pricing power now (brand, lock-in, niche) = inflation armor 🛡️", shift:"margin = power, not penny-pinching. earn the right to charge", move:"pick the strongest pricing-power move you could build this quarter + start it now" } },
+  t1:{ gist:"60-sec pricing hack: anchor high, make the middle tier the obvious pick 🎯", digest:{ new:"anchor high, sell the outcome, design the mid tier to be the auto-yes", affect:"if your middle option isn't the bait, you're leaving money on the table daily", profit:"add a spicy expensive tier as decoy, watch mid-tier sales glow up ✨", shift:"price is positioning not math — you sell a decision, not a number", move:"add a pricey top tier to your pricing page + watch mid-tier conversions for 2 weeks" } },
+  y2:{ gist:"12-min crash course on the exact AI stack behind a for-you feed 📚", digest:{ new:"embeddings + retrieval + rerankers explained without the yapping", affect:"demystifies what we'd actually build for Loupe, say less", profit:"knowing the stack = you scope it right, hire right, dodge vendor scams", shift:"search isn't keywords anymore, it's vibes-in-math (vectors)", move:"sketch your feed's retrieval flow on 1 page + price each step before coding" } },
+  y1:{ gist:"build an AI that books sales calls while you sleep 😴📞", digest:{ new:"full build: enrich → personalize → guardrails → actually books meetings", affect:"the boring outreach grind becomes a system, not your whole day", profit:"more booked calls per hour, lower cost per meeting. clean W", shift:"agents don't replace people, they delete the grunt work so you do the smart stuff", move:"automate 1 boring outbound step this week, scale only after it books a real call" } },
+  n2:{ gist:"EU changing the tender rules in 2027 — get ready or get ratio'd 📋", digest:{ new:"new machine-readable bid format becomes mandatory in 2027", affect:"bidding public works? adapt or get DQ'd on a technicality 💀", profit:"ready early = you win while everyone else panics at the deadline", shift:"rules aren't just annoying — first movers turn them into a moat", move:"run 1 current bid against the 2027 format now so it's a head start not a fire drill" } },
+  n3:{ gist:"german startup bagged €40M for AI that does estimating. follow the money 👀💶", digest:{ new:"€40M raised for AI estimating tools = where the smart money's looking", affect:"tells you estimating is the next big lever in the build game", profit:"adopt/partner early — faster estimates = more tenders won", shift:"the edge is moving from labor → software. watch the code not just the site", move:"trial 1 AI estimating tool on a live tender vs your manual baseline" } },
+  p1:{ gist:"run your team async + delete pointless meetings. free time unlocked ⏰", digest:{ new:"rituals that swap status meetings for written async decisions", affect:"if your team's across timezones, meetings are a tax — this refunds it", profit:"more shipping per person, scales without hiring meeting-managers", shift:"meetings are a default not a law. write first, meet only to decide", move:"swap your next status meeting for a written update + see what breaks (nothing)" } },
+  pa3:{ gist:"science: every 'quick check' nukes your focus harder than you think 🧠💥", digest:{ new:"paper puts a real number on how much task-switching actually costs", affect:"your chaotic calendar is deleting output you can't even see", profit:"batch the shallow stuff + guard focus = free productivity, $0 spent", shift:"time isn't the flex, attention is. guard it like your bag", move:"block 2 no-meeting focus windows tomorrow + defend them like client time" } },
+  r1:{ gist:"15-sec clip: a façade trick that cuts waste. lowkey genius 🏗️", digest:{ new:"panel system that actually reduces material waste, rarely taught", affect:"if you bid build work, this is a real flex to bring to a tender", profit:"less waste = a cost AND eco story you paste into proposals", shift:"design isn't decoration, it's where the margin hides fr", move:"save this detail to your proposal library with the cost line ready to paste" } },
+  c2:{ gist:"3 people shipping like 12 using a design system. efficiency arc 📈", digest:{ new:"tokens + reusable parts + saying 'no' = tiny team ships huge", affect:"small teams drown re-deciding stuff — a system saves you", profit:"faster + cleaner shipping = more output, same payroll", shift:"constraints are speed not the enemy. stop re-deciding solved stuff", move:"define 5 reusable building blocks for what you ship most + ban one-offs for a month" } },
+  r2:{ gist:"the 3-sec hook formula, decoded. first frame = the whole game 🎬", digest:{ new:"creator breaks down why frame 1 decides everything + a repeatable hook", affect:"works on pitches, ads, even your proposal's first line bestie", profit:"better hooks = more reach + replies for $0 extra. efficiency W", shift:"attention is earned in 1 sec, never assumed. front-load the value", move:"rewrite your next post/proposal's first line as a hook + A/B it vs your usual" } },
+  t2:{ gist:"deep-work routine that survives a cooked calendar. 2 anchors only ⚓", digest:{ new:"2 protected focus blocks a day + ruthless single-tasking", affect:"protects your best thinking exactly when the day tries to shred it", profit:"the strategic work that actually makes money finally gets done", shift:"productivity isn't more hours, it's protecting the few that compound", move:"pick tomorrow's 2 anchors tonight + phone in another room for the first one" } },
+};
+function kha(){ return state.persona==='kha'; }
+function C(item){ return kha() && KHA[item.id] ? KHA[item.id] : item; }
+function LBL(){ return kha() ? KLENS : LENS_LABELS; }
+/* original-source links (demo = source site; live = exact permalink from the n8n pull) */
+let URLS = { n1:'https://nvidianews.nvidia.com', pa1:'https://arxiv.org', c1:'https://www.youtube.com', h1:'https://news.ycombinator.com', s1:'https://substack.com', pa2:'https://www.nber.org', t1:'https://www.tiktok.com', y2:'https://www.youtube.com', y1:'https://www.youtube.com', n2:'https://ec.europa.eu', n3:'https://techcrunch.com', p1:'https://podcasts.apple.com', pa3:'https://arxiv.org', r1:'https://www.instagram.com', c2:'https://www.youtube.com', r2:'https://www.instagram.com', t2:'https://www.tiktok.com' };
+function urlOf(id){ return URLS[id] || '#'; }
+
+/* ============================ STATE ============================ */
+const DAY = 86400000;
+const DEFAULTS = { persona:'trev', threshold:65, mix:40, saved:[], deltas:{trev:{},kha:{},cang:{}}, clicks:0, lastReset:Date.now() };
+let state = load();
+maybeWeeklyReset();
+
+function load(){ try{ const s=JSON.parse(localStorage.getItem('loupe.v2')); if(s) return Object.assign({},JSON.parse(JSON.stringify(DEFAULTS)),s);}catch(e){} return JSON.parse(JSON.stringify(DEFAULTS)); }
+function save(){ localStorage.setItem('loupe.v2', JSON.stringify(state)); }
+
+function maybeWeeklyReset(){
+  const days = (Date.now() - (state.lastReset||Date.now()))/DAY;
+  if(days >= 7){ decayDeltas(0.4); state.lastReset = Date.now(); save(); }
+}
+function decayDeltas(factor){ for(const pk of Object.keys(state.deltas||{})){ for(const t of Object.keys(state.deltas[pk])){ state.deltas[pk][t]*=factor; if(Math.abs(state.deltas[pk][t])<0.01) delete state.deltas[pk][t]; } } }
+
+function interestOf(pk,topic){ const base=PERSONAS[pk].interests[topic]??0; const d=(state.deltas[pk]&&state.deltas[pk][topic])||0; return Math.max(0,Math.min(1,base+d)); }
+function bump(pk,topic,amt){ state.deltas[pk]=state.deltas[pk]||{}; const base=PERSONAS[pk].interests[topic]??0; const cur=state.deltas[pk][topic]||0; state.deltas[pk][topic]=Math.max(0,Math.min(1,base+cur+amt))-base; }
+function bumpTop(item,pk,amt,n){ Object.entries(item.topics).sort((a,b)=>b[1]-a[1]).slice(0,n||3).forEach(([t])=>bump(pk,t,amt)); }
+
+/* ============================ SCORING ============================ */
+function interestMatch(item,pk){ let num=0,den=0; for(const [t,w] of Object.entries(item.topics)){ den+=w; num+=w*interestOf(pk,t);} return den?num/den:0; }
+function rankScore(item,pk){ const you=state.mix/100; return you*interestMatch(item,pk) + (1-you)*(item.market/100); }
+function passes(item){ return item.prod >= state.threshold; }
+function wordCount(d){ return Object.values(d).join(' ').trim().split(/\s+/).length; }
+
+/* ============================ RENDER ============================ */
+const $=s=>document.querySelector(s);
+const feedEl=$('#feed');
+let currentSurfaced=[];
+
+function render(){
+  const pk=state.persona;
+  document.documentElement.setAttribute('data-persona',pk);
+  const surfaced=ITEMS.filter(passes).sort((a,b)=>rankScore(b,pk)-rankScore(a,pk));
+  currentSurfaced=surfaced;
+  const intake=ITEMS.length+NOISE.length;
+  const cut=intake-surfaced.length;
+  const cutPct=Math.round(cut/intake*100);
+
+  $('#heroEye').textContent=kha()?`today's drop · Kha's algo 💅`:`Today · ${PERSONAS[pk].name}'s lens`;
+  document.querySelector('.hero .sub').innerHTML=kha()?`<b>${state.mix}% your taste, ${100-state.mix}% what's popping</b> — so you never rot in a cringe echo chamber 💀. each card's a quick read: the tea, why u care, the bag, brain glow-up + what to actually do.`:`<b>${state.mix}% what you want, ${100-state.mix}% what the market makes you face</b> — so you sharpen instead of rotting in a bubble. Every item: what's new, who it hits, where's the profit, the mind-shift, and your move.`;
+  $('#heroKept').textContent=surfaced.length;
+  $('#heroCutPct').textContent=cutPct+'%';
+  $('#stIntake').textContent=intake;
+  $('#stSurfaced').textContent=surfaced.length;
+  $('#stCut').textContent=cut;
+  $('#feedWho').textContent=PERSONAS[pk].name;
+  $('#barsWho').textContent=PERSONAS[pk].name;
+  $('#feedCnt').textContent=kha()?`${surfaced.length} made the cut · ${state.mix}% u / ${100-state.mix}% what's trending 📈`:`${surfaced.length} passed the gate · ranked ${state.mix}% taste / ${100-state.mix}% market`;
+  $('#savedCount').textContent=`${state.saved.length} saved`;
+  $('#learnHint').textContent=`learned from ${state.clicks} click${state.clicks===1?'':'s'} · saves · More/Less`;
+
+  // mix UI
+  $('#mixYou').textContent=state.mix+'%'; $('#mixMkt').textContent=(100-state.mix)+'%';
+  $('#splitYou').style.width=state.mix+'%'; $('#splitMkt').style.width=(100-state.mix)+'%';
+  // reset countdown
+  const daysLeft=Math.max(0,Math.ceil(7-(Date.now()-state.lastReset)/DAY));
+  $('#resetIn').textContent=`Bubble refresh in ${daysLeft}d`;
+
+  renderPersona(); renderBars(); renderNoise(cut);
+
+  feedEl.innerHTML='';
+  surfaced.forEach((item,i)=>{
+    const m=Math.round(interestMatch(item,pk)*100);
+    const it=C(item), kz=kha(), lab=LBL();
+    const feature=i===0, isSaved=state.saved.includes(item.id), s=SRC[item.src], wc=wordCount(it.digest);
+    const stretch=m<27;
+    const card=document.createElement('article');
+    card.className='card'+(feature?' feature':'')+(isSaved?' saved':'');
+    card.dataset.id=item.id; card.style.transitionDelay=Math.min(i*50,400)+'ms';
+    card.innerHTML=`<div class="shell"><div class="core" data-open="${item.id}">
+      <div class="ctop">
+        <div class="src"><span class="ico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">${s.ic}</svg></span>
+          <span class="meta"><b>${s.l}</b><span>${wc} words · from ${item.mins}-min ${s.w}</span></span></div>
+        <div class="badges">${stretch?'<span class="stretch">⤢ stretch</span>':''}<a class="srclink" href="${urlOf(item.id)}" target="_blank" rel="noopener noreferrer" title="Open the original source">${kz?'real one ↗':'source ↗'}</a><span class="age">${item.age}</span></div>
+      </div>
+      <h3>${item.title}</h3>
+      <p class="gist">${it.gist}</p>
+      <div class="lenses">${Object.keys(it.digest).map(k=>`<span class="lens">${lab[k]}</span>`).join('')}</div>
+      <div class="metrics">
+        <div class="ring" title="Productivity ${item.prod}/100"><svg width="46" height="46"><circle cx="23" cy="23" r="19" stroke="rgba(255,255,255,.08)" stroke-width="3.5" fill="none"/><circle cx="23" cy="23" r="19" stroke="var(--accent)" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-dasharray="${(item.prod/100*119.4).toFixed(1)} 119.4"/></svg><span class="val mono">${item.prod}</span></div>
+        <div class="mbars">
+          <div class="mline"><div class="ml"><span>${kz?'main character energy':'Market force'}</span><span class="mk2">${item.market}</span></div><div class="mt"><div class="mf mkt" style="width:${item.market}%"></div></div></div>
+          <div class="mline"><div class="ml"><span>${kz?'ur vibe ✨':PERSONAS[pk].name+' match'}</span><b>${m}%</b></div><div class="mt"><div class="mf you" style="width:${m}%"></div></div></div>
+        </div>
+      </div>
+      <div class="why"><span class="sp">✦</span> ${whyLine(item,pk,stretch)}</div>
+      <div class="tags">${Object.keys(item.topics).slice(0,feature?6:4).map(t=>`<span class="tag" data-topic="${t}">${t}</span>`).join('')}</div>
+      <div class="actions">
+        <button class="act primary" data-act="read" data-id="${item.id}">${kz?'spill the tea ☕':'Read · '+wc+'w'} <span class="pin"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+        <button class="act${isSaved?' on':''}" data-act="save" data-id="${item.id}"><svg viewBox="0 0 24 24" fill="${isSaved?'currentColor':'none'}" stroke="currentColor" stroke-width="1.5"><path d="M6 4h12v16l-6-4-6 4z"/></svg>${isSaved?'Saved':'Save'}</button>
+        <button class="act" data-act="more" data-id="${item.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg> More</button>
+        <button class="act" data-act="less" data-id="${item.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14"/></svg> Less</button>
+      </div>
+    </div></div>`;
+    feedEl.appendChild(card);
+  });
+  requestAnimationFrame(()=>document.querySelectorAll('.card').forEach(c=>io.observe(c)));
+}
+
+function whyLine(item,pk,stretch){
+  const top=Object.entries(item.topics).map(([t,w])=>[t,w*interestOf(pk,t)]).sort((a,b)=>b[1]-a[1]).filter(x=>x[1]>.05).slice(0,2).map(x=>x[0]);
+  if(kha()){
+    if(stretch) return `not ur usual but the algo said trust 👀 (market force ${item.market})`;
+    const tier=item.prod>=88?'absolute W 🔥':item.prod>=80?'lowkey fire':'solid, not mid';
+    return top.length?`${tier} · ur thing rn (${top.join(' + ')})`:`${tier} · everyone eats`;
+  }
+  if(stretch) return `Off your usual path — surfaced by market force (${item.market}). This is the anti-bubble at work.`;
+  const tier=item.prod>=88?'Exceptional signal':item.prod>=80?'High signal':'Solid signal';
+  return top.length?`${tier} · matches ${top.join(' + ')}`:`${tier} · broad value`;
+}
+
+function renderPersona(){
+  const wrap=$('#personaSwitch'); wrap.innerHTML='';
+  Object.entries(PERSONAS).forEach(([k,p])=>{
+    const b=document.createElement('button');
+    b.className='pbtn'; b.setAttribute('role','tab'); b.setAttribute('aria-selected',state.persona===k); b.dataset.persona=k;
+    b.innerHTML=`<span class="av">${p.name[0]}</span><span><div class="pn">${p.name}</div><div class="pt">${p.type}</div></span>`;
+    b.onclick=()=>setPersona(k); wrap.appendChild(b);
+  });
+}
+function renderBars(){
+  const pk=state.persona; const all=new Set();
+  ITEMS.forEach(i=>Object.keys(i.topics).forEach(t=>all.add(t)));
+  Object.keys(PERSONAS[pk].interests).forEach(t=>all.add(t));
+  const top=[...all].map(t=>[t,interestOf(pk,t)]).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  $('#bars').innerHTML=top.map(([t,v])=>`<div class="bar"><div class="row"><b>${t}</b><span>${Math.round(v*100)}</span></div><div class="track"><div class="fill" style="width:${Math.round(v*100)}%"></div></div></div>`).join('');
+}
+function renderNoise(cut){
+  $('#noiseN').textContent=cut;
+  const dropped=ITEMS.filter(i=>!passes(i)).map(i=>({x:i.prod,t:i.title,r:`Below gate (${i.prod}) · good, but you set the bar at ${state.threshold}`}));
+  const list=[...dropped,...NOISE].slice(0,16);
+  $('#noiseList').innerHTML=list.map(n=>`<div class="ni"><span class="x mono">${n.x}</span><span class="nt">${n.t}</span><span class="rs">${n.r}</span></div>`).join('');
+}
+
+/* ============================ READER ============================ */
+function openReader(id){
+  const item=ITEMS.find(i=>i.id===id); if(!item) return;
+  const pk=state.persona, it=C(item), s=SRC[item.src], wc=wordCount(it.digest), m=Math.round(interestMatch(item,pk)*100), isSaved=state.saved.includes(id);
+  // passive learning: a click is a real signal
+  state.clicks++; bumpTop(item,pk,0.025,2); save();
+  $('#readerCore').innerHTML=`
+    <button class="rclose" id="rclose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="src"><span class="ico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:var(--ink);fill:none;opacity:.8">${s.ic}</svg></span><span class="meta"><b>${s.l}</b></span></div>
+    <h2>${item.title}</h2>
+    <div class="rmeta"><span class="pwc">${wc}-word digest</span><span>·</span><span>compressed from a ${item.mins}-min ${s.w}</span><span>·</span><span>${item.age} ago</span></div>
+    ${Object.keys(it.digest).map(k=>`<div class="seg"><h5>${LBL()[k]}</h5><p>${it.digest[k]}</p></div>`).join('')}
+    <div class="rscore">
+      <div class="rsc"><div class="v mono">${item.prod}</div><div class="k">Productivity</div></div>
+      <div class="rsc"><div class="v mono">${item.market}</div><div class="k">Market force</div></div>
+      <div class="rsc"><div class="v mono">${m}%</div><div class="k">${PERSONAS[pk].name} match</div></div>
+    </div>
+    <div class="actions">
+      <a class="act" href="${urlOf(id)}" target="_blank" rel="noopener noreferrer">${kha()?'go to the source ↗':'Open original ↗'}</a>
+      <button class="act primary" data-act="save" data-id="${id}"><svg viewBox="0 0 24 24" fill="${isSaved?'currentColor':'none'}" stroke="currentColor" stroke-width="1.5" style="width:14px;height:14px"><path d="M6 4h12v16l-6-4-6 4z"/></svg>${isSaved?(kha()?'kept 💅':'Saved'):(kha()?'keep fr':'Save')} <span class="pin"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+      <button class="act" data-act="more" data-id="${id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg> ${kha()?'moar of this 🔥':'More like this'}</button>
+      <button class="act" data-act="less" data-id="${id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14"/></svg> Less</button>
+    </div>`;
+  $('#overlay').classList.add('open');
+  $('#rclose').onclick=closeReader;
+  renderBars(); $('#learnHint').textContent=`learned from ${state.clicks} clicks · saves · More/Less`;
+}
+function closeReader(){ $('#overlay').classList.remove('open'); }
+$('#overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeReader(); });
+
+/* ============================ ACTIONS ============================ */
+function handleAct(act,id,fromReader){
+  const item=ITEMS.find(i=>i.id===id);
+  if(act==='read'){ openReader(id); return; }
+  if(act==='save'){ const i=state.saved.indexOf(id); if(i>=0){state.saved.splice(i,1);toast('Removed from saved');}else{state.saved.push(id);toast('Saved to your shelf');} save(); render(); if(fromReader) refreshReaderSaveState(id); }
+  else if(act==='more'){ bumpTop(item,state.persona,0.07,3); save(); render(); toast(`Tuned ↑ ${Object.keys(item.topics).slice(0,2).join(', ')} for ${PERSONAS[state.persona].name}`); }
+  else if(act==='less'){ bumpTop(item,state.persona,-0.09,3); save(); render(); toast(`Tuned ↓ ${Object.keys(item.topics).slice(0,2).join(', ')} for ${PERSONAS[state.persona].name}`); }
+}
+function refreshReaderSaveState(id){ if($('#overlay').classList.contains('open')) openReader(id); }
+
+feedEl.addEventListener('click',e=>{
+  if(e.target.closest('a')) return;
+  const tag=e.target.closest('.tag');
+  if(tag){ e.stopPropagation(); bump(state.persona,tag.dataset.topic,0.08); save(); render(); toast(`↑ more ${tag.dataset.topic} for ${PERSONAS[state.persona].name}`); return; }
+  const btn=e.target.closest('.act');
+  if(btn){ e.stopPropagation(); handleAct(btn.dataset.act,btn.dataset.id,false); return; }
+  const op=e.target.closest('[data-open]'); if(op) openReader(op.dataset.open);
+});
+$('#readerCore').addEventListener('click',e=>{ if(e.target.closest('a')) return; const btn=e.target.closest('.act'); if(btn) handleAct(btn.dataset.act,btn.dataset.id,true); });
+
+function setPersona(k){ state.persona=k; save(); render(); toast(k==='kha'?`kha mode ON 💅 it's giving for-you page`:`Switched to ${PERSONAS[k].name} · ${PERSONAS[k].type.split(' · ')[1]}`); }
+
+const gate=$('#gate');
+function syncGateFill(){ gate.style.setProperty('--fill',((gate.value-50)/(92-50)*100)+'%'); }
+gate.value=state.threshold; syncGateFill();
+gate.addEventListener('input',()=>{ state.threshold=+gate.value; $('#gateNum').textContent=gate.value; syncGateFill(); save(); render(); });
+
+const mix=$('#mix'); mix.value=state.mix;
+mix.addEventListener('input',()=>{ state.mix=+mix.value; save(); render(); });
+
+$('#resetBtn').addEventListener('click',()=>{ decayDeltas(0.4); state.lastReset=Date.now(); save(); render(); toast('Bubble refreshed — learned bias decayed toward neutral'); });
+$('#noiseTop').addEventListener('click',()=>$('#noise').classList.toggle('open'));
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeReader();
+  if($('#overlay').classList.contains('open')) return;
+  if(e.key==='1') setPersona('trev'); if(e.key==='2') setPersona('kha'); if(e.key==='3') setPersona('cang');
+});
+
+const io=new IntersectionObserver(es=>{ es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} }); },{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+let tT; function toast(msg){ const t=$('#toast'); $('#toastMsg').textContent=msg; t.classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* ============================ LIVE FEED LOADER ============================ */
+/* Pulls feed.json (built daily by GitHub Actions). Falls back to the embedded
+   sample above when offline / opened via file:// so the page never breaks. */
+function timeAgo(d){ const h=(Date.now()-d.getTime())/3600000; if(h<1) return Math.max(1,Math.round(h*60))+'m ago'; if(h<24) return Math.round(h)+'h ago'; return Math.round(h/24)+'d ago'; }
+async function boot(){
+  try{
+    const res = await fetch('feed.json',{cache:'no-store'});
+    if(res.ok){
+      const data = await res.json();
+      if(data && Array.isArray(data.items) && data.items.length){
+        ITEMS = data.items;
+        if(Array.isArray(data.noise) && data.noise.length) NOISE = data.noise;
+        URLS = {}; KHA = {};
+        for(const it of ITEMS){ if(it.url) URLS[it.id]=it.url; if(it.kha) KHA[it.id]=it.kha; }
+        const note=$('#feedSrcNote');
+        if(note){
+          const when = data.generatedAt ? timeAgo(new Date(data.generatedAt)) : 'today';
+          const eng  = (data.source||'').includes('llm') ? 'AI digest' : 'snippet';
+          const n    = (data.counts&&data.counts.fetched)||ITEMS.length;
+          note.innerHTML = `live feed · ${n} sources pulled · updated ${when} · auto-built daily via <b>GitHub Actions</b> (${eng})`;
+        }
+      }
+    }
+  }catch(e){ /* offline / file:// — keep the embedded sample */ }
+  render();
+}
+boot();
+</script>
+</body>
+</html>

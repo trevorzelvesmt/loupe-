@@ -1,0 +1,435 @@
+{
+  "generatedAt": "2026-06-14T12:41:49.884Z",
+  "source": "live",
+  "counts": {
+    "fetched": 120,
+    "surfaced": 20,
+    "noise": 12
+  },
+  "items": [
+    {
+      "id": "hn14pb",
+      "src": "hn",
+      "title": "Honda Civics and the Evil Valet",
+      "url": "https://juniperspring.org/posts/honda-evil-valet/",
+      "prod": 80,
+      "market": 96,
+      "mins": 6,
+      "age": "12h",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "313 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 313 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn1slr",
+      "src": "hn",
+      "title": "Noise infusion banned from statistical products published by Census Bureau",
+      "url": "https://desfontain.es/blog/banning-noise.html",
+      "prod": 80,
+      "market": 92,
+      "mins": 6,
+      "age": "23h",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "843 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 843 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn885",
+      "src": "hn",
+      "title": "Amazon CEO's talks with U.S. officials triggered crackdown on Anthropic models",
+      "url": "https://www.wsj.com/tech/ai/amazon-ceos-talks-with-u-s-officials-triggered-crackdown-on-anthropic-models-dcc90578?st=Yct6gx&reflink=desktopwebshare_permalink",
+      "prod": 80,
+      "market": 92,
+      "mins": 6,
+      "age": "20h",
+      "topics": {
+        "ai": 1
+      },
+      "gist": "717 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 717 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn1soq",
+      "src": "hn",
+      "title": "GLM 5.2 Is Out",
+      "url": "https://twitter.com/jietang/status/2065784751345287314",
+      "prod": 80,
+      "market": 92,
+      "mins": 6,
+      "age": "20h",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "641 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 641 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hnti3",
+      "src": "hn",
+      "title": "Treating pancreatic tumours may have revealed cancer's master switch",
+      "url": "https://economist.com/science-and-technology/2026/06/12/treating-pancreatic-tumours-may-have-revealed-cancers-master-switch",
+      "prod": 80,
+      "market": 92,
+      "mins": 6,
+      "age": "23h",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "391 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 391 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn1hvu",
+      "src": "hn",
+      "title": "AI coding at home without going broke",
+      "url": "https://stephen.bochinski.dev/blog/2026/06/13/ai-coding-at-home-without-going-broke/",
+      "prod": 80,
+      "market": 90,
+      "mins": 6,
+      "age": "20h",
+      "topics": {
+        "ai": 1,
+        "dev": 0.78
+      },
+      "gist": "310 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 310 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hnqr4",
+      "src": "hn",
+      "title": "Free SQL→ER diagram tool, runs in the browser, nothing uploaded",
+      "url": "https://sqltoerdiagram.com/",
+      "prod": 80,
+      "market": 88,
+      "mins": 6,
+      "age": "9h",
+      "topics": {
+        "tools": 1
+      },
+      "gist": "217 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 217 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hnvv",
+      "src": "hn",
+      "title": "Every Frame Perfect",
+      "url": "https://tonsky.me/blog/every-frame-perfect/",
+      "prod": 80,
+      "market": 86,
+      "mins": 6,
+      "age": "1d",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "769 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 769 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hnkcv",
+      "src": "hn",
+      "title": "ReactOS (FOSS \"Windows\") achieves 3D-accelerated Half-Life on real hardware",
+      "url": "https://www.phoronix.com/news/ReactOS-Running-Half-Life",
+      "prod": 80,
+      "market": 85,
+      "mins": 6,
+      "age": "13h",
+      "topics": {
+        "hardware": 1
+      },
+      "gist": "248 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 248 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn1uku",
+      "src": "hn",
+      "title": "A low-carbon computing platform from your retired phones",
+      "url": "https://research.google/blog/a-low-carbon-computing-platform-from-your-retired-phones/",
+      "prod": 80,
+      "market": 83,
+      "mins": 6,
+      "age": "1d",
+      "topics": {
+        "tech": 1
+      },
+      "gist": "302 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 302 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn1zs0",
+      "src": "hn",
+      "title": "Don't trust large context windows",
+      "url": "https://garrit.xyz/posts/2026-05-06-dont-trust-large-context-windows",
+      "prod": 80,
+      "market": 82,
+      "mins": 6,
+      "age": "7h",
+      "topics": {
+        "dev": 1
+      },
+      "gist": "147 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 147 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn1ydc",
+      "src": "hn",
+      "title": "Phoenix LiveView 1.2",
+      "url": "https://phoenixframework.org/blog/phoenix-liveview-1-2-released",
+      "prod": 80,
+      "market": 82,
+      "mins": 6,
+      "age": "8h",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "141 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 141 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hnj0k",
+      "src": "hn",
+      "title": "Pac-Man, but you're the ghost",
+      "url": "https://garrit.xyz/posts/2026-06-13-pac-man-but-you-re-the-ghost",
+      "prod": 80,
+      "market": 81,
+      "mins": 6,
+      "age": "8h",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "126 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 126 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn1grx",
+      "src": "hn",
+      "title": "GameBoy Workboy",
+      "url": "https://tcrf.net/Workboy",
+      "prod": 80,
+      "market": 80,
+      "mins": 6,
+      "age": "19h",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "197 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 197 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hnqi2",
+      "src": "hn",
+      "title": "RTX 5080 and RTX 3090 Setup: 80 Tok/s on Qwen 3.6 27B Q8",
+      "url": "https://imil.net/blog/posts/2026/rtx-5080-+-rtx-3090-setup-80+-tok-s-on-qwen-3.6-27b-q8/",
+      "prod": 80,
+      "market": 79,
+      "mins": 6,
+      "age": "1d",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "257 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 257 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn1qnp",
+      "src": "hn",
+      "title": "The experience of rendering Arabic typography and its technical debt",
+      "url": "https://lr0.org/blog/p/arabic/",
+      "prod": 80,
+      "market": 79,
+      "mins": 6,
+      "age": "1d",
+      "topics": {
+        "design": 1
+      },
+      "gist": "251 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 251 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "ne1kp",
+      "src": "news",
+      "title": "Solid-state batteries still aren’t ready, but gels are",
+      "url": "https://www.theverge.com/column/948594/solid-state-batteries-semi-solid-state",
+      "prod": 79,
+      "market": 78,
+      "mins": 4,
+      "age": "42m",
+      "topics": {
+        "story": 1
+      },
+      "gist": "This is The Stepback, a weekly newsletter breaking down one essential story from the tech world.",
+      "digest": {
+        "new": "This is The Stepback, a weekly newsletter breaking down one essential story from the tech world. For more on e-bikes, power stations, and how to work anywhere, follow Thomas Ricker. The Stepback arrives in our subscribers' inboxes at 8AM ET. Opt in for The Stepback here. How it started Lithium-ion batteries are everywhere as we […]"
+      }
+    },
+    {
+      "id": "suvjn",
+      "src": "substack",
+      "title": "The hidden pattern behind successful products | Mark Pincus (Founder of Zynga)",
+      "url": "https://www.lennysnewsletter.com/p/the-common-pattern-behind-successful",
+      "prod": 85,
+      "market": 70,
+      "mins": 7,
+      "age": "10m",
+      "topics": {
+        "tools": 1,
+        "frameworks": 0.78
+      },
+      "gist": "Listen now | Mark Pincus on why your instincts are right but your ideas are wrong, the “Proven, Better, New” framework, and what he’s teaching his kid",
+      "digest": {
+        "new": "Listen now | Mark Pincus on why your instincts are right but your ideas are wrong, the “Proven, Better, New” framework, and what he’s teaching his kids"
+      }
+    },
+    {
+      "id": "hnqpt",
+      "src": "hn",
+      "title": "The adder at the heart of Intel's 8087 floating-point chip",
+      "url": "https://www.righto.com/2026/06/intel-8087-adder-reverse-engineered.html",
+      "prod": 80,
+      "market": 74,
+      "mins": 6,
+      "age": "20h",
+      "topics": {
+        "hardware": 1
+      },
+      "gist": "116 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 116 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    },
+    {
+      "id": "hn19it",
+      "src": "hn",
+      "title": "Weave: Merging based on language structure and not lines",
+      "url": "https://ataraxy-labs.github.io/weave/",
+      "prod": 80,
+      "market": 74,
+      "mins": 6,
+      "age": "10h",
+      "topics": {
+        "dev": 1,
+        "tools": 0.78,
+        "tech": 0.66
+      },
+      "gist": "49 points on Hacker News — tap the source for the discussion.",
+      "digest": {
+        "new": "On the Hacker News front page with 49 points. Open the source to read the discussion and decide if it earns your time."
+      }
+    }
+  ],
+  "noise": [
+    {
+      "x": 80,
+      "t": "Tribblix: The retro Illumos distribution",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 80,
+      "t": "Building a serial and VGA \"everything console\"",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 80,
+      "t": "Running DOS on Behringers DDX3216 with a DIY x86-Bios from Scratch",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 86,
+      "t": "AWS Introduces Durable Storage Option for ElastiCache for Valkey",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 80,
+      "t": "Codex for open source",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 79,
+      "t": "Amazon security research reportedly led to the White House’s Anthropic Fable ban",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 86,
+      "t": "Terraform MCP Server Enables AI Assistants to Interact with Terraform Infrastructure",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 70,
+      "t": "As Anthropic suspends access to new models, India debates its AI future",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 74,
+      "t": "This thin under-pillow speaker helped me fall asleep without earbuds",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 74,
+      "t": "X-Men ’97 has what Master of the Universe is missing",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 74,
+      "t": "Sealed Super Mario Bros. sells for a record $3 million",
+      "r": "Lower signal · ranked below today’s cut"
+    },
+    {
+      "x": 74,
+      "t": "Microsoft hasn’t ruled out spinning off Xbox",
+      "r": "Lower signal · ranked below today’s cut"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+name: Build & deploy Loupe feed
+
+# Runs the feed builder every day and publishes loupe-site/ to GitHub Pages.
+# Free: GitHub Actions minutes + Pages hosting are both $0 for public repos.
+
+on:
+  schedule:
+    - cron: '0 6 * * *'        # 06:00 UTC daily — the "auto" part
+  workflow_dispatch:            # lets you trigger a run by hand from the Actions tab
+  push:
+    branches: [ main ]          # rebuild + redeploy on every push to main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# never run two deploys at once
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build feed.json
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}   # optional; snippet fallback if unset
+        run: node scripts/build-feed.js
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: loupe-site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
