@@ -35,7 +35,7 @@ jobs:
 
       - name: Build feed.json
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}   # optional; snippet fallback if unset
+          GEMINI_API_KEY: ${{ secrets.LOUPEEEE }}   # Trev's Gemini key is stored in the secret named LOUPEEEE
         run: node scripts/build-feed.js
 
       - uses: actions/configure-pages@v5
